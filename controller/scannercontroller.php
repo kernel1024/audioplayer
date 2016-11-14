@@ -611,14 +611,41 @@ class ScannerController extends Controller {
 					$cleanTrackNumber=trim($temp[0]);
 				}
 
-				if(isset($ThisFileInfo['comments']['picture'])){
-					$data=$ThisFileInfo['comments']['picture'][0]['data'];
+				$id3_cover = isset($ThisFileInfo['comments']['picture']);
+				$album_aux_cover = '';
+				if(!$id3_cover){
+					$album_dir = dirname($fileName);
+					if(is_dir($album_dir)){
+						// search for standard cover names
+						$album_files = scandir($album_dir);
+						$album_imgs = preg_grep("/^(case|cover|front)(.*)(jpg|png)/i", $album_files);
+						if(empty($album_imgs)){
+							// if nothing found - take first image from directory if any
+							$album_imgs = preg_grep("/(.*)(jpg|png)/i", $album_files);
+						}
+						if(!empty($album_imgs)){
+							$album_aux_cover = join(DIRECTORY_SEPARATOR, array($album_dir, reset($album_imgs)));
+							if (!file_exists($album_aux_cover))
+								$album_aux_cover = '';
+						}
+					}
+				}
+				if($id3_cover OR !empty($album_aux_cover)){
 					$image = new \OCP\Image();
-					if($image->loadFromdata($data)) {
+					$res = '';
+					if($id3_cover){
+						$data=$ThisFileInfo['comments']['picture'][0]['data'];
+						$res = $image->loadFromdata($data);
+					} else {
+						$res = $image->loadFromFile($album_aux_cover);
+					}
+					if($res){
 						if(($image->width() <= 250 && $image->height() <= 250) || $image->resize(250)) {
 							$imgString=$image->__toString();
 							$this->writeCoverToAlbum($iAlbumId,$imgString,'');
-							$poster='data:'.$ThisFileInfo['comments']['picture'][0]['image_mime'].';base64,'.$imgString;
+							if($id3_cover){
+								$poster='data:'.$ThisFileInfo['comments']['picture'][0]['image_mime'].';base64,'.$imgString;
+							}
 						}
 					}
 				}
