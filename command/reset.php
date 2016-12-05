@@ -60,17 +60,22 @@ class Reset extends Command {
 		} else {
 			$users = $input->getArgument('user_id');
 		}
+
 		$users_total = count($users);
 		if ($users_total === 0) {
-			$output->writeln("<error>Please specify the user id to reset, \"--all\" to reset for all users or \"user_id\"</error>");
+			$output->writeln("<error>Please specify a valid user id to reset, \"--all\" to scan for all users<error>");
 			return;
 		}
-		foreach ($users as $user) {
-			if (is_object($user)) {
-				$user = $user->getUID();
+		
+		foreach ($users as $userId) {
+			$user = $this->userManager->get($userId);
+			if (is_null($user)) {
+				$output->writeln("<error>User $userId does not exist</error>");
+			} else {
+				$userId = $user->getUID();
+				$output->writeln("<info>Reset library for $userId</info>");
+			$this->reset->resetMediaLibrary($userId, $output);
 			}
-			$output->writeln("<info>Reset library for $user</info>");
-			$this->reset->resetMediaLibrary($user, $output);
 		}
 	}
 

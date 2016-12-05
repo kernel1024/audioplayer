@@ -21,7 +21,7 @@ Audio Player for MP3, MP4, Ogg, and Wave with a lot of flexibility for all your 
 - Play shared audio files directly
 - occ support for library scan and reset
 - Select a dedicated folder for scanning
-- Exclude folders from scanning
+- Exclude folders from scanning (`.noaudio`)
 
 ### Supported Formats
 MP3, MP4, Ogg Vorbis, and Waveform Audio. [Read more …](https://github.com/rello/audioplayer/wiki/audio-files-and-mime-types)
@@ -31,7 +31,7 @@ Latest versions of Chrome, Firefox, and Safari.
 Internet Explorer and Edge are not supported.
 
 ### Languages
-English (en), Deutsch (Persönlich) (de), Deutsch (Förmlich) (de_DE), Русский (ru), 正體中文（臺灣） (zh_TW)
+English (en), Deutsch (Persönlich) (de), Deutsch (Förmlich) (de_DE), Русский (ru), Українська (uk), 正體中文（臺灣） (zh_TW)
 
 ## Documentation
 - [User Documentation](https://github.com/rello/audioplayer/wiki#user-documentation)
