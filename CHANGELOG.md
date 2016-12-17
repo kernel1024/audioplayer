@@ -1,7 +1,7 @@
 # Changelog
 
 ## 1.4.0
-2016-xx-xx
+2016-12-15
 - fix: catch special characters in album [#87](https://github.com/rello/audioplayer/issues/87)
 - fix: occ catch unknown user [#93](https://github.com/rello/audioplayer/issues/93)
 - fix: correct album sort order to case-insensitive
@@ -9,7 +9,8 @@
 - enhancement: Ukrainian translation [#94](https://github.com/rello/audioplayer/issues/94)
 - enhancement: folders as additional filter category [#98](https://github.com/rello/audioplayer/issues/98)
 - enhancement: search for cover in album folder [#24](https://github.com/rello/audioplayer/issues/24)
-- enhancement: Opus Support [#92](https://github.com/rello/audioplayer/issues/92)
+- enhancement: Opus support [#92](https://github.com/rello/audioplayer/issues/92)
+- enhancement: ID3 tags on sharing screen [#102](https://github.com/rello/audioplayer/issues/102)
 
 ## 1.3.1
 2016-11-17

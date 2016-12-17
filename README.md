@@ -1,30 +1,27 @@
-#![Icon](https://github.com/rello/screenshots/blob/master/Audioplayer_Icon_30.png) Audio Player
+# ![Icon](https://raw.githubusercontent.com/rello/audioplayer/master/screenshots/audioplayer_icon.png) Audio Player
 
 [![License: AGPLv3](https://img.shields.io/badge/License-AGPLv3-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)   [![Issues](https://img.shields.io/github/issues/rello/audioplayer.svg)](https://github.com/rello/audioplayer/issues) [![Stars](https://img.shields.io/github/stars/rello/audioplayer.svg)](https://github.com/rello/audioplayer/stargazers) [![Forks](https://img.shields.io/github/forks/rello/audioplayer.svg)](https://github.com/rello/audioplayer/network)
 
-Audio Player for MP3, MP4, Ogg, and Wave with a lot of flexibility for all your needs.
+Audio Player for commonly used formats with a lot of flexibility for all your needs.
 
-<img src="https://github.com/rello/screenshots/blob/master/audioplayer_main.png" alt="Main" width="599" height="400" title="Main">
+<img src="https://raw.githubusercontent.com/rello/audioplayer/master/screenshots/audioplayer_main.png" alt="Main" width="599" height="400" title="Main">
 
-<img src="https://github.com/rello/screenshots/blob/master/audioplayer_lists.png" alt="Navigation" width="189" height="250" title="Navigation">     
-<img src="https://github.com/rello/screenshots/blob/master/audioplayer_share.png" alt="Share Player" width="179" height="250" title="Share Player">     
-<img src="https://github.com/rello/screenshots/blob/master/audioplayer_actions.png" alt="Action Menu" width="100" height="156" title="Action Menu">
+<img src="https://raw.githubusercontent.com/rello/audioplayer/master/screenshots/audioplayer_lists.png" alt="Navigation" width="189" height="250" title="Navigation">     
+<img src="https://raw.githubusercontent.com/rello/audioplayer/master/screenshots/audioplayer_share.png" alt="Share Player" width="171" height="250" title="Share Player">     
+<img src="https://raw.githubusercontent.com/rello/audioplayer/master/screenshots/audioplayer_actions.png" alt="Action Menu" width="100" height="156" title="Action Menu">
 
 ## Features
-- Animated album view
-- Various selections (playlists, artists, genres, years, all)
-- Scanning and resetting music library
-- Playlist editing in the UI
-- Editing ID3 tags (incl. picture)
+- Multiple views (albums with covers and more)
+- Library scan and reset with command-line and browser
+- Specifying media folder (with exclude functionality)
+- Play shared files directly without downloading
+- Playlists and ID3 tag editor (incl. picture)
+- One Click Play from Files app
+- External cover support
 - Mobile view support
-- One Click Play from file browser
-- Play shared audio files directly
-- occ support for library scan and reset
-- Select a dedicated folder for scanning
-- Exclude folders from scanning (`.noaudio`)
 
 ### Supported Formats
-MP3, MP4, Ogg Vorbis, and Waveform Audio. [Read more …](https://github.com/rello/audioplayer/wiki/audio-files-and-mime-types)
+MP3, MP4, Ogg Vorbis, Opus, and Waveform Audio. [Read more …](https://github.com/rello/audioplayer/wiki/audio-files-and-mime-types)
 
 ### Supported Browsers
 Latest versions of Chrome, Firefox, and Safari.  
@@ -38,8 +35,8 @@ English (en), Deutsch (Persönlich) (de), Deutsch (Förmlich) (de_DE), Ру
 - [Admin Documentation](https://github.com/rello/audioplayer/wiki#admin-documentation)
 
 ## Installation
-- [ownCloud App Store](https://apps.owncloud.com/content/show.php?content=174738) (please enable experimental apps)
-- [Nextcloud App Store](https://apps.nextcloud.com/apps/audioplayer) (app store in beta stage)
+- [ownCloud App Store](https://apps.owncloud.com/content/show.php?content=174738)
+- [Nextcloud App Store](https://apps.nextcloud.com/apps/audioplayer)
 - [Known Issues](https://github.com/rello/audioplayer/wiki/installation-instructions#known-issues)
 
 ## Bugs and Feature Requests

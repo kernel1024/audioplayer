@@ -21,6 +21,7 @@ OC.L10N.register(
 	"File" : "Файл",
 	"Title" : "Название",
 	"Interpret" : "Исполнитель",
+	"Artist" : "Исполнитель",
 	"Year" : "Год",
 	"Album" : "Альбом",
 	"Edit Song from Playlist" : "Редактировать информацию о песне",
@@ -49,6 +50,13 @@ OC.L10N.register(
 	"Existing Artists" : "Исполнитель из списка",
 	"New Artist" : "Новый исполнитель",
 	"Existing Genres" : "Стиль из списка",
-	"New Genre" : "Новый стиль"
+	"New Genre" : "Новый стиль",
+	"Selected Folder" : "Выбрана папка",
+	"Selected Playlist" : "Выбран список воспроизведения",
+	"Selected Genre" : "Выбран стиль",
+	"Selected Year" : "Выбран год",
+	"Selected" : "Выбрано",
+	"Selected Artist" : "Выбран исполнитель",
+	"Length" : "Длина"
 	},
 "");

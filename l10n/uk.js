@@ -1,7 +1,6 @@
 OC.L10N.register(
     "audioplayer",
-    {
- 
+    { 
 	"Add new Songs to playlist" : "Знайти і додати нову музику",
 	"Scan for new audio files" : "Знайти нові аудіофайли...",
 	"Sort Playlist" : "Упорядочить список воспроизведения",
@@ -21,6 +20,7 @@ OC.L10N.register(
 	"File" : "Файл",
 	"Title" : "Назва",
 	"Interpret" : "Виконавець",
+	"Artist" : "Виконавець",
 	"Year" : "Рік",
 	"Album" : "Альбом",
 	"Edit Song from Playlist" : "Редагувати інформацію про трек",
@@ -41,7 +41,7 @@ OC.L10N.register(
 	"Drag Image Here!" : "Перетяніть картинку сюди!",
 	"Reset Media Library" : "Скидання бази даних музики",
 	"Start deleting and resetting media library ..." : "Виконую очистку бази даних музики ...",
-	"Resetting finished!" : "Сброс выполнен!",
+	"Resetting finished!" : "Скидання завершено!",
 	"Are you sure? All music database entries will be deleted!" : "Виконати скидання? База даних музики буде очищена.",
 	"Close" : "Закрити",
 	"Play" : "Грати",
@@ -49,6 +49,13 @@ OC.L10N.register(
 	"Existing Artists" : "Виконавець із списку",
 	"New Artist" : "Новий виконавець",
 	"Existing Genres" : "Стиль із списку",
-	"New Genre" : "Новий стиль"
+	"New Genre" : "Новий стиль",
+	"Selected Folder" : "Обрана тека",
+	"Selected Playlist" : "Обраний список відтворення",
+	"Selected Genre" : "Обраний стиль",
+	"Selected Year" : "Обраний рік",
+	"Selected" : "Обрані",
+	"Selected Artist" : "Обраний виконавець",
+	"Length" : "довжина"
 	},
 "");

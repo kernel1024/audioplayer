@@ -103,8 +103,8 @@ $(document).ready(function() {
 			OC.addStyle('audioplayer','360player');
 			OC.addStyle('audioplayer','360player-visualization');	
 			
-			$('#imgframe').css({'width':'250px'});
-			setTimeout(function(){ $('#imgframe').children().first().css({'width':'250px'}); }, 2000);	
+			//$('#imgframe').css({'width':'450px'});
+			setTimeout(function(){ $('#imgframe').children('img').first().css({'max-width':'250px'}); }, 2000);	
 			
 			if( $('#previewSupported').val() !== 'true'){
 				$('#imgframe').hide();
@@ -120,7 +120,7 @@ $(document).ready(function() {
 			var audioInnerDiv=$('<div>').addClass('ui360 ui360-vis');
 			var audioLink=$('<a/>').attr({
 				'href':audioUrl
-			}).text($('#filename').val());
+			}).text($('#filename').val()).css('visibility','hidden');
 			audioInnerDiv.append(audioLink);
 			audioOuterDiv.append(audioInnerDiv);
 			audioContainer.append(audioOuterDiv);
@@ -132,6 +132,33 @@ $(document).ready(function() {
 					 
 				});
 			});
+			
+			$('#imgframe').before($('<div/>').attr('id','id3'));
+				url = OC.generateUrl('apps/audioplayer/getpublicaudioinfo{file}?token={token}',{'file':fileName,'token':token},{escape:false});
+				
+				$.ajax({
+					type : 'GET',
+					url : url,
+					success : function(jsondata) {
+						if(jsondata.status == 'success'){
+							var playlistsdata=jsondata.data;
+							$(".directLink").remove();
+							//$(".directDownload").remove();
+							$('#content-wrapper').css({'padding-top':'0px'});
+							$('#id3').append('<div>&nbsp;</div>');
+							$('#id3').append('<div><b>'+t('audioplayer','Title')+':</b>&nbsp;'+ jsondata.data.title +'</div>');
+							$('#id3').append('<div><b>'+t('audioplayer','Artist')+':</b>&nbsp;'+ jsondata.data.artist +'</div>');
+							$('#id3').append('<div><b>Album:</b>&nbsp;'+ jsondata.data.album +'</div>');
+							$('#id3').append('<div><b>Genre:</b>&nbsp;'+ jsondata.data.genre +'</div>');
+							$('#id3').append('<div><b>'+t('audioplayer','Year')+':</b>&nbsp;'+ jsondata.data.year +'</div>');
+							$('#id3').append('<div><b>'+t('audioplayer','Length')+':</b>&nbsp;'+ jsondata.data.length +'</div>');
+							$('#id3').append('<div><b>'+t('audioplayer','Bitrate')+':</b>&nbsp;'+ jsondata.data.bitrate +'&nbsp;kbps</div>');
+							$('#imgframe').css({'padding-top':'10px'});
+							$('#imgframe').css({'padding-bottom':'0px'});
+							$('.directDownload').css({'padding-top':'10px'});
+						}
+					}
+				});
 		}
 			
 	
