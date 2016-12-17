@@ -20,6 +20,7 @@ OC.L10N.register(
 	"File" : "檔案名",
 	"Title" : "曲名",
 	"Interpret" : "演出者",
+	"Artist" : "演出者",
 	"Year" : "年份",
 	"Album" : "專輯",
 	"Edit Song from Playlist" : "由播放清單編輯",
@@ -47,6 +48,13 @@ OC.L10N.register(
 	"Existing Artists" : "Existing Artists",
 	"New Artist" : " 新藝人",
 	"Existing Genres" : "現有的曲風",
-	"New Genre" : " 新曲風"
+	"New Genre" : " 新曲風",
+	"Selected Folder" : "Selected Folder",
+	"Selected Playlist" : "Selected Playlists",
+	"Selected Genre" : "Selected Genre",
+	"Selected Year" : "Selected Year",
+	"Selected" : "Selected",
+	"Selected Artist" : "Selected Artist",
+	"Length" : "Length"
 },
 "");

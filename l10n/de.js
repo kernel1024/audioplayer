@@ -21,6 +21,7 @@ OC.L10N.register(
 	"File" : "Datei",
 	"Title" : "Titel",
 	"Interpret" : "Künstler",
+	"Artist" : "Künstler",
 	"Year" : "Jahr",
 	"Album" : "Album",
 	"Edit Song from Playlist" : "Titel bearbeiten",
@@ -48,6 +49,13 @@ OC.L10N.register(
 	"Existing Artists" : "Vorhandene Künstler",
 	"New Artist" : " Neuer Künstler",
 	"Existing Genres" : "Vorhandene Genres",
-	"New Genre" : " Neues Genre"
+	"New Genre" : " Neues Genre",
+	"Selected Folder" : "Ausgewählter Ordner",
+	"Selected Playlist" : "Ausgewählte Wiedergabeliste",
+	"Selected Genre" : "Ausgewähltes Genre",
+	"Selected Year" : "Ausgewähltes Jahr",
+	"Selected" : "Ausgewählt",
+	"Selected Artist" : "Ausgewählter Künstler",
+	"Length" : "Länge"
 },
 "");
