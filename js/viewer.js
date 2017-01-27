@@ -1,23 +1,13 @@
 /**
- * ownCloud - Audio Player
+ * Audio Player
  *
- * @author Marcel Scherello
- * @author Sebastian Doell
- * @copyright 2015 sebastian doell sebastian@libasys.de
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the LICENSE.md file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see http://www.gnu.org/licenses.
- *
+ * @author Marcel Scherello <audioplayer@scherello.de>
+ * @author Sebastian Doell <sebastian@libasys.de>
+ * @copyright 2016-2017 Marcel Scherello
+ * @copyright 2015 Sebastian Doell
  */
 
 var audioPlayer = {
@@ -103,13 +93,13 @@ $(document).ready(function() {
 			OC.addStyle('audioplayer','360player');
 			OC.addStyle('audioplayer','360player-visualization');	
 			
-			//$('#imgframe').css({'width':'450px'});
-			setTimeout(function(){ $('#imgframe').children('img').first().css({'max-width':'250px'}); }, 2000);	
+			setTimeout(function(){ $('.publicpreview').css({'margin-top':'0px'}); }, 2000);	
+			$('#imgframe').css({'max-width':'250px'});
+			$('#imgframe').css({'margin-bottom':'0px'});
 			
 			if( $('#previewSupported').val() !== 'true'){
 				$('#imgframe').hide();
 			}
-			//$('#imgframe').append($('<br style="clear:both;" />'));
 			var fileName=$('#filename').val();
 			fileName = encodeURIComponent(fileName);
 			var audioUrl= OC.generateUrl('apps/audioplayer/getpublicaudiostream{file}?token={token}',{'file':fileName,'token':token},{escape:false});

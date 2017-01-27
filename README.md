@@ -1,8 +1,8 @@
 # ![Icon](https://raw.githubusercontent.com/rello/audioplayer/master/screenshots/audioplayer_icon.png) Audio Player
 
-[![License: AGPLv3](https://img.shields.io/badge/License-AGPLv3-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)   [![Issues](https://img.shields.io/github/issues/rello/audioplayer.svg)](https://github.com/rello/audioplayer/issues) [![Stars](https://img.shields.io/github/stars/rello/audioplayer.svg)](https://github.com/rello/audioplayer/stargazers) [![Forks](https://img.shields.io/github/forks/rello/audioplayer.svg)](https://github.com/rello/audioplayer/network)
+[![License: AGPLv3](https://img.shields.io/badge/License-AGPLv3-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)   [![Issues](https://img.shields.io/github/issues/rello/audioplayer.svg)](https://github.com/rello/audioplayer/issues) [![Stars](https://img.shields.io/github/stars/rello/audioplayer.svg)](https://github.com/rello/audioplayer/stargazers) [![Forks](https://img.shields.io/github/forks/rello/audioplayer.svg)](https://github.com/rello/audioplayer/network)   [![Donate](https://img.shields.io/badge/Donate-Bitcoin-blue.svg?style=flat)](https://github.com/rello/audioplayer/wiki/donate)
 
-Audio Player for commonly used formats with a lot of flexibility for all your needs.
+A versatile music player for MP3, MP4, Ogg, Wave, and more with playlist support and share player.
 
 <img src="https://raw.githubusercontent.com/rello/audioplayer/master/screenshots/audioplayer_main.png" alt="Main" width="599" height="400" title="Main">
 
@@ -28,7 +28,7 @@ Latest versions of Chrome, Firefox, and Safari.
 Internet Explorer and Edge are not supported.
 
 ### Languages
-English (en), Deutsch (Persönlich) (de), Deutsch (Förmlich) (de_DE), Русский (ru), Українська (uk), 正體中文（臺灣） (zh_TW)
+English (en), Deutsch (Persönlich) (de), Deutsch (Förmlich) (de_DE), Polski (pl), Русский (ru), Українська (uk), 正體中文（臺灣） (zh_TW)
 
 ## Documentation
 - [User Documentation](https://github.com/rello/audioplayer/wiki#user-documentation)

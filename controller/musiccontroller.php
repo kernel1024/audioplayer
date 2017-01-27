@@ -1,24 +1,14 @@
 <?php
 /**
- * ownCloud - Audio Player
+ * Audio Player
  *
- * @author Marcel Scherello
- * @author Sebastian Doell
- * @copyright 2015 sebastian doell sebastian@libasys.de
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the LICENSE.md file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Marcel Scherello <audioplayer@scherello.de>
+ * @author Sebastian Doell <sebastian@libasys.de>
+ * @copyright 2016-2017 Marcel Scherello
+ * @copyright 2015 Sebastian Doell
  */
 
 namespace OCA\audioplayer\Controller;
@@ -192,7 +182,7 @@ class MusicController extends Controller {
 			
 		$stmt = $this->db->prepareQuery($SQL);
 		$result = $stmt->execute(array($this->userId));
-		$aAlbums='';
+		$aAlbums=array();
 		while( $row = $result->fetchRow()) {
 			$row['artist'] = $this->loadArtistsToAlbum($row['id']);	
 			$row['backgroundColor'] = '#D3D3D3';
@@ -206,11 +196,11 @@ class MusicController extends Controller {
 			}
 			$aAlbums[$row['id']] = $row;
 		}
-		if(is_array($aAlbums)){
+		if(empty($aAlbums)){
+  			return false;
+ 		}else{
 			$aAlbums = $this->sortArrayByFields($aAlbums); 
 			return $aAlbums;
-		}else{
-			return false;
 		}
 	}
 	
@@ -253,7 +243,7 @@ class MusicController extends Controller {
 			
 		$stmt = $this->db->prepareQuery($SQL);
 		$result = $stmt->execute(array($this->userId));
-		$aSongs='';
+		$aSongs=array();
 		
 		while( $row = $result->fetchRow()) {
 			$file_not_found = false;
@@ -275,10 +265,10 @@ class MusicController extends Controller {
 				$this->deleteFromDB($row['id'],$row['album_id'],$row['artist_id'],$row['file_id']);
 			}	
 		}
-		if(is_array($aSongs)){
-			return $aSongs;
-		}else{
-			return false;
+		if(empty($aSongs)){
+  			return false;
+ 		}else{
+ 			return $aSongs;
 		}
 	}
 
@@ -286,9 +276,9 @@ class MusicController extends Controller {
 	 * @NoAdminRequired
 	 */
 	public  function searchProperties($searchquery){
-		$SQL="SELECT  `id`,`name` FROM `*PREFIX*audioplayer_albums` WHERE (LOWER(`name`) LIKE LOWER(?) OR `year` LIKE ?) AND `user_id` = ?";
+		$SQL="SELECT  `id`,`name` FROM `*PREFIX*audioplayer_albums` WHERE (LOWER(`name`) LIKE LOWER(?)) AND `user_id` = ?";
 		$stmt = $this->db->prepareQuery($SQL);
-		$result = $stmt->execute(array('%'.addslashes($searchquery).'%', '%'.addslashes($searchquery).'%', $this->userId));
+		$result = $stmt->execute(array('%'.addslashes($searchquery).'%', $this->userId));
 		$aAlbum ='';
 		if(!is_null($result)) {
 			while( $row = $result->fetchRow()) {

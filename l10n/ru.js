@@ -2,12 +2,12 @@ OC.L10N.register(
     "audioplayer",
     {
  
-	"Add new Songs to playlist" : "Найти и добавить новую музыку",
+	"Add new tracks to library" : "Найти и добавить новую музыку",
 	"Scan for new audio files" : "Найти новые аудиофайлы...",
 	"Sort Playlist" : "Упорядочить список воспроизведения",
 	"Delete Playlist" : "Удалить список воспроизведения",
 	"Delete Song from Playlist" :"Убрать песню из списка воспроизведения",
-	"No Songs found in current Playlist! Add new Songs per Drag & Drop from album view" : "В этом списке воспроизведения пусто! Чтобы добавить песню или альбом, перетащите их сюда",
+	"Add new tracks to playlist by drag and drop from album view" : "В этом списке воспроизведения пусто! Чтобы добавить песню или альбом, перетащите их сюда",
 	"No Playlist selected!" : "Не выбран список воспроизведения!",
 	"Sort modus active" : "Включено упорядочивание",
 	"Delete playlist success!" : "Список воспроизведения удалён!",

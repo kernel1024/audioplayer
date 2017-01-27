@@ -1,23 +1,13 @@
 /**
- * ownCloud - Audio Player
+ * Audio Player
  *
- * @author Marcel Scherello
- * @author Sebastian Doell
- * @copyright 2015 sebastian doell sebastian@libasys.de
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the LICENSE.md file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see http://www.gnu.org/licenses.
- *
+ * @author Marcel Scherello <audioplayer@scherello.de>
+ * @author Sebastian Doell <sebastian@libasys.de>
+ * @copyright 2016-2017 Marcel Scherello
+ * @copyright 2015 Sebastian Doell
  */
 
 var Audios = function(){
@@ -510,10 +500,16 @@ Audios.prototype.loadAlbums = function(){
 			 		divSongsContainer.append(listAlbumSelect);
 			 		
 			 		var aSongs=[];
+					var li = $('<li/>');
+					var spanNr = $('<span/>').addClass('number').text('\u00A0');
+					li.append(spanNr);
 			 		if(songs[album.id]){
+			 			var songcounter = 0;
 				 		$.each(songs[album.id],function(ii,songs){
 				 			aSongs[ii] = $this.loadSongsRow(songs, album.name);
+				 			songcounter++;
 				 		});
+						if (songcounter % 2 !==0) aSongs.push(li); //add a blank row in case of uneven records=>avoid a Chrome bug to strangely split the records across columns
 			 		}else{
 			 			console.warn('Could not find songs for album:', album.name, album);
 			 		}
@@ -530,20 +526,16 @@ Audios.prototype.loadAlbums = function(){
 							return false;
 						  });
 			 		});
-			 		divSongContainer[i].append(aClose);
-			 		
-			 		
-				 });
-				 
-				  $this.AlbumContainer.append(divSongContainer);
-				  
-				  $this.PlaylistSongs();
-				
+			 		divSongContainer[i].append(aClose);			 					 		
+				 });				 
+				$this.AlbumContainer.append(divSongContainer);				  
+				$this.PlaylistSongs();				
 			}else{
-				  $this.AlbumContainer.show();
-				  $this.AlbumContainer.html('<span class="no-songs-found"><i class="ioc ioc-refresh" title="'+t('audioplayer','Scan for new audio files')+'" id="scanAudiosFirst"></i> '+t('audioplayer','Add new Songs to playlist')+'</span>');
-				  $('#app-navigation').removeClass('mp3_hide');
-
+				$this.AlbumContainer.show();
+				$this.AlbumContainer.html('<span class="no-songs-found">'+t('audioplayer','Welcome to')+' Audio Player</span>');
+				$this.AlbumContainer.append('<span class="no-songs-found-pl"><i class="ioc ioc-refresh" title="'+t('audioplayer','Scan for new audio files')+'" id="scanAudiosFirst"></i> '+t('audioplayer','Add new tracks to library')+'</span>');
+				$this.AlbumContainer.append('<a class="no-songs-found-pl" href="https://github.com/Rello/audioplayer/wiki" target="_blank">'+t('audioplayer','Help')+'</a>');
+				$('#app-navigation').removeClass('mp3_hide');
 			}			
 		}
 	});
@@ -614,9 +606,6 @@ Audios.prototype.loadCategory = function(category){
 										}
 									});
 								}
-								var spanPlaylistInfo=$('<span/>')
-								.attr('class','info-cover').css({'background-color':el.info.backgroundColor,'color':el.info.color})
-								.text(el.info.name.substring(0, 1));
 								
 								var spanName=$('<span/>')
 								.attr({'data-plid':el.info.id,'class':'pl-name'})
@@ -628,7 +617,6 @@ Audios.prototype.loadCategory = function(category){
 								var iEdit=$('<a/>').attr({'class':'icon icon-rename toolTip','data-name':el.info.name,'data-editid':el.info.id,'title':t('audioplayer','Rename Playlist')}).click($this.renamePlaylist.bind($this));
 								var iDelete=$('<i/>').attr({'class':'ioc ioc-delete toolTip','data-deleteid':el.info.id,'title':t('audioplayer','Delete Playlist')}).click($this.deletePlaylist.bind($this));
 			
-								//li.append(spanPlaylistInfo);
 								if (category === 'Playlist' ){
 									var spanName=$('<span/>')
 										.attr({'data-plid':el.info.id,'class':'pl-name-play'})
@@ -826,7 +814,7 @@ Audios.prototype.loadIndividualCategory = function(evt) {
 		}
 	
  	}else{
- 		$('#individual-playlist').html('<span class="no-songs-found-pl">'+t('audioplayer','No Songs found in current Playlist! Add new Songs per Drag & Drop from album view')+'</span>');
+ 		$('#individual-playlist').html('<span class="no-songs-found-pl">'+t('audioplayer','Add new tracks to playlist by drag and drop from album view')+'</span>');
  	}
 	}else{
 		$this.AlbumContainer.hide();
@@ -1582,6 +1570,9 @@ Audios.prototype.get_uservalue = function(user_type, callback) {
 					callback($this.category_selectors);
 				}else if(jsondata.status === 'success' && user_type === 'navigation' && jsondata.value === 'true') {
 					$('#app-navigation-toggle_alternative').trigger( "click" );
+				}else if(jsondata.status === 'false' && user_type === 'navigation') {
+					$this.category_selectors[0] = 'Album';
+					callback($this.category_selectors);
 				}
 			}
 		});

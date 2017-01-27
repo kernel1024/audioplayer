@@ -1,25 +1,16 @@
 <?php
 /**
- * ownCloud - Audio Player
+ * Audio Player
  *
- * @author Marcel Scherello
- * @author Sebastian Doell
- * @copyright 2015 sebastian doell sebastian@libasys.de
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the LICENSE.md file.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * @author Marcel Scherello <audioplayer@scherello.de>
+ * @author Sebastian Doell <sebastian@libasys.de>
+ * @copyright 2016-2017 Marcel Scherello
+ * @copyright 2015 Sebastian Doell
  */
+
 namespace OCA\audioplayer\Controller;
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\JSONResponse;
@@ -403,10 +394,7 @@ class ScannerController extends Controller {
 						$returnData['imgsrc']='';
 						$returnData['prefcolor'] = '';
 						if($pImgMime !== '' && $addCoverToAlbum === 'true'){
-							$getDominateColor = $this->getDominateColorOfImage($imgString);
-							$this->writeCoverToAlbum($newAlbumId,$imgString,$getDominateColor);
-							
-							$returnData['prefcolor'] = 'rgba('.$getDominateColor['red'].','.$getDominateColor['green'].','.$getDominateColor['blue'].',0.7)';
+							$this->writeCoverToAlbum($newAlbumId,$imgString,'');
 							$returnData['imgsrc'] = 'data:image/jpg;base64,'.$imgString;
 						}
 					
@@ -572,7 +560,7 @@ class ScannerController extends Controller {
 				}
 								
 				$artist = (string) $this->l10n->t('Unknown');
-				if(isset($ThisFileInfo['comments']['artist'][0])){
+				if(isset($ThisFileInfo['comments']['artist'][0]) and rawurlencode($ThisFileInfo['comments']['artist'][0]) !== '%FF%FE'){
 					$artist=$ThisFileInfo['comments']['artist'][0];
 				}
 				$iArtistId= $this->writeArtistToDB($artist);
@@ -584,7 +572,7 @@ class ScannerController extends Controller {
 				# if all the same - display it as album artist
 				# if different track-artists, display "various"
 				# if Album Artist is maintained
-				if(isset($ThisFileInfo['comments']['band'][0])){
+				if(isset($ThisFileInfo['comments']['band'][0]) and rawurlencode($ThisFileInfo['comments']['band'][0]) !== '%FF%FE'){
 					$album_artist=$ThisFileInfo['comments']['band'][0];
 					$iAlbumArtistId= $this->writeArtistToDB($album_artist);
 					$iAlbumId = $this->writeAlbumToDB($album,(int)$year,$iAlbumArtistId);
@@ -593,7 +581,7 @@ class ScannerController extends Controller {
 				}
 				
 				$name = $audio->getName();
-				if(isset($ThisFileInfo['comments']['title'][0])){
+				if(isset($ThisFileInfo['comments']['title'][0]) and rawurlencode($ThisFileInfo['comments']['title'][0]) !== '%FF%FE'){
 					$name=$ThisFileInfo['comments']['title'][0];
 				}
 				
@@ -616,36 +604,34 @@ class ScannerController extends Controller {
 
 				$parentId = $audio->getParent()->getId();
 
-				if(isset($ThisFileInfo['comments']['picture'])){
-					$data=$ThisFileInfo['comments']['picture'][0]['data'];
-					$this->getFolderPicture($iAlbumId,$data);
+				if ($parentId === $parentId_prev AND $folderpicture) {
+					if ($debug) $output->writeln("     Reusing previous folder image");
+					$this->getFolderPicture($iAlbumId,$folderpicture->getContent());
 				} else {
-					if ($parentId !== $parentId_prev) {
-						$folderpicture = false;
-						if ($audio->getParent()->nodeExists('cover.jpg')) {
-							$folderpicture = $audio->getParent()->get('cover.jpg');
-						} elseif ($audio->getParent()->nodeExists('cover.png')) {
-							$folderpicture = $audio->getParent()->get('cover.png');
-						} elseif ($audio->getParent()->nodeExists('folder.jpg')) {
-							$folderpicture = $audio->getParent()->get('folder.jpg');
-						} elseif ($audio->getParent()->nodeExists('folder.png')) {
-							$folderpicture = $audio->getParent()->get('folder.png');
-						} elseif ($audio->getParent()->nodeExists('case.jpg')) {
-							$folderpicture = $audio->getParent()->get('case.jpg');
-						} elseif ($audio->getParent()->nodeExists('case.png')) {
-							$folderpicture = $audio->getParent()->get('case.png');
-						}
-						if ($folderpicture) {
-							$this->getFolderPicture($iAlbumId,$folderpicture->getContent());
-							if ($debug) $output->writeln("     Alternative album art: ".$folderpicture->getInternalPath());
-						}
-						$parentId_prev = $parentId;
-					} elseif ($parentId === $parentId_prev AND $folderpicture) {
-						if ($debug) $output->writeln("     Reusing previous folder image");
-						$this->getFolderPicture($iAlbumId,$folderpicture->getContent());
+					$folderpicture = false;
+					if ($audio->getParent()->nodeExists('cover.jpg')) {
+						$folderpicture = $audio->getParent()->get('cover.jpg');
+					} elseif ($audio->getParent()->nodeExists('cover.png')) {
+						$folderpicture = $audio->getParent()->get('cover.png');
+					} elseif ($audio->getParent()->nodeExists('folder.jpg')) {
+						$folderpicture = $audio->getParent()->get('folder.jpg');
+					} elseif ($audio->getParent()->nodeExists('folder.png')) {
+						$folderpicture = $audio->getParent()->get('folder.png');
+					} elseif ($audio->getParent()->nodeExists('case.jpg')) {
+						$folderpicture = $audio->getParent()->get('case.jpg');
+					} elseif ($audio->getParent()->nodeExists('case.png')) {
+						$folderpicture = $audio->getParent()->get('case.png');
 					}
+					
+					if ($folderpicture) {
+						$this->getFolderPicture($iAlbumId,$folderpicture->getContent());
+						if ($debug) $output->writeln("     Alternative album art: ".$folderpicture->getInternalPath());
+					} elseif (isset($ThisFileInfo['comments']['picture'])){
+						$data=$ThisFileInfo['comments']['picture'][0]['data'];
+						$this->getFolderPicture($iAlbumId,$data);
+					}					
+					$parentId_prev = $parentId;
 				}
-
 				
 				$playTimeString = '';
 				if(isset($ThisFileInfo['playtime_string'])){
@@ -705,14 +691,9 @@ class ScannerController extends Controller {
     	$stmtCount = $this->db->prepareQuery( 'SELECT `cover` FROM `*PREFIX*audioplayer_albums` WHERE `id` = ? AND `user_id` = ?' );
 		$resultCount = $stmtCount->execute(array ($iAlbumId, $this->userId));
 		$row = $resultCount->fetchRow();
-		if($row['cover'] === null){
-			$aBgColor=json_encode($aBgColor);
-			$stmt = $this->db->prepareQuery( 'UPDATE `*PREFIX*audioplayer_albums` SET `cover`= ?, `bgcolor`= ? WHERE `id` = ? AND `user_id` = ?' );
-			$result = $stmt->execute(array($sImage, $aBgColor, $iAlbumId, $this->userId));
-			return true;
-		}else{
-			return false;
-		}
+		$stmt = $this->db->prepareQuery( 'UPDATE `*PREFIX*audioplayer_albums` SET `cover`= ?, `bgcolor`= ? WHERE `id` = ? AND `user_id` = ?' );
+		$result = $stmt->execute(array($sImage, '', $iAlbumId, $this->userId));
+		return true;
     }
 	
 	/**
