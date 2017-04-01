@@ -1,17 +1,19 @@
 OC.L10N.register(
     "audioplayer",
     {
- 
+	"Welcome to" : "Willkommen bei",
+	"Audio Player" : "Audio-Player",
 	"Add new tracks to library" : "Der Bibliothek neue Titel hinzufügen",
 	"Scan for new audio files" : "Nach neuen Audiodateien suchen",
+	"Help" : "Hilfe",
 	"Sort Playlist" : "Wiedergabeliste sortieren",
 	"Delete Playlist" : "Wiedergabeliste löschen",
 	"Delete Song from Playlist" :"Titel von der Wiedergabeliste löschen",
 	"Add new tracks to playlist by drag and drop from album view" : "Der Wiedergabeliste neue Titel per Drag and Drop aus der Albenansicht hinzufügen",
 	"No Playlist selected!" : "Keine Wiedergabeliste ausgewählt!",
-	"Sort modus active" : "Bearbeitung aktiviert",
+	"Sort modus active" : "Sortiermodus aktiv",
 	"Delete playlist success!" : "Wiedergabeliste wurde erfolgreich gelöscht!",
-	"Rename Playlist" : "Wiedergabeliste umbennen",
+	"Rename Playlist" : "Wiedergabeliste umbenennen",
 	"Start scanning ..." : "Scanvorgang starten ...",
 	"Scanning finished! New Audios found!" :"Suche beendet! Es wurden neue Audiodateien gefunden!",
 	"Yes" : "Ja",
@@ -24,6 +26,7 @@ OC.L10N.register(
 	"Artist" : "Interpret",
 	"Year" : "Jahr",
 	"Album" : "Album",
+	"Composer" : "Composer",
 	"Edit Song from Playlist" : "Titel der Wiedergabeliste bearbeiten",
 	"Edit track information (ID3)" : "Titelinformationen (ID3) bearbeiten",
 	"Missing Permissions for editing ID3 Tags of song!" : "Fehlende Berechtigungen zum Bearbeiten der ID3-Tags des Titels!",
@@ -51,11 +54,13 @@ OC.L10N.register(
 	"Existing Genres" : "Vorhandene Genres",
 	"New Genre" : "Neues Genre",
 	"Selected" : "Ausgewählt",
+	"Selected Album" : "Ausgewähltes Album",
 	"Selected Artist" : "Ausgewählter Interpret",
+	"Selected Composer" : "Ausgewählter Komponist",
 	"Selected Folder" : "Ausgewählter Ordner",
 	"Selected Genre" : "Ausgewähltes Genre",
 	"Selected Playlist" : "Ausgewählte Wiedergabeliste",
 	"Selected Year" : "Ausgewähltes Jahr",
-	"Length" : "Laufzeit"
+	"Length" : "Länge"
 },
 "");

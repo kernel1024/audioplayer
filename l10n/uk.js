@@ -1,8 +1,11 @@
 OC.L10N.register(
     "audioplayer",
     { 
+	"Welcome to" : "Welcome to",
+	"Audio Player" : "Аудіо-плеєр",
 	"Add new tracks to library" : "Знайти і додати нову музику",
 	"Scan for new audio files" : "Знайти нові аудіофайли...",
+	"Help" : "Help",
 	"Sort Playlist" : "Упорядочить список воспроизведения",
 	"Delete Playlist" : "Удалить список воспроизведения",
 	"Delete Song from Playlist" :"Видалити пісню з списку відтворення",
@@ -23,6 +26,7 @@ OC.L10N.register(
 	"Artist" : "Виконавець",
 	"Year" : "Рік",
 	"Album" : "Альбом",
+	"Composer" : "Composer",
 	"Edit Song from Playlist" : "Редагувати інформацію про трек",
 	"Edit track information (ID3)" : "Редагування інформації про пісню (ID3)",
 	"Missing Permissions for editing ID3 Tags of song!" : "Для редагування інформації (ID3) недостатньо прав!",
@@ -50,12 +54,14 @@ OC.L10N.register(
 	"New Artist" : "Новий виконавець",
 	"Existing Genres" : "Стиль із списку",
 	"New Genre" : "Новий стиль",
-	"Selected Folder" : "Обрана тека",
-	"Selected Playlist" : "Обраний список відтворення",
-	"Selected Genre" : "Обраний стиль",
-	"Selected Year" : "Обраний рік",
 	"Selected" : "Обрані",
+	"Selected Album" : "Обраний альбом",
 	"Selected Artist" : "Обраний виконавець",
+	"Selected Composer" : "Selected Composer",
+	"Selected Folder" : "Обрана тека",
+	"Selected Genre" : "Обраний стиль",
+	"Selected Playlist" : "Обраний список відтворення",
+	"Selected Year" : "Обраний рік",
 	"Length" : "довжина"
 	},
 "");

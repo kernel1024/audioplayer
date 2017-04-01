@@ -63,7 +63,7 @@ class AudioStream {
 		$this -> iStart = 0;
 		$this -> iEnd = $this -> iSize - 1;
 		
-		header("Accept-Ranges: 0-" . $this -> iEnd);
+		header("Accept-Ranges: bytes");
 		
 		if (isset($_SERVER['HTTP_RANGE'])) {
 			$c_start = $this -> iStart;
@@ -97,7 +97,7 @@ class AudioStream {
 				fseek($this -> stream, $this -> iStart);
 			}
 			header('HTTP/1.1 206 Partial Content');
-			header("Content-Length: " . $length);
+//			header("Content-Length: " . $length);
 			header("Content-Range: bytes ".$this->iStart."-".$this->iEnd."/".$this->iSize);
 			//\OCP\Util::writeLog('audioplayer','SEQ:'.$this->iStart."-".$this->iEnd."/".$this->iSize.'length:'.$length,\OCP\Util::DEBUG);
 		} else {

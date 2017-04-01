@@ -1,6 +1,33 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 1.5.0 - 2017-03-31
+### Added
+- sorting of lists [#122](https://github.com/rello/audioplayer/issues/122)
+- albums to selection [#132](https://github.com/rello/audioplayer/issues/132)
+- highlighting and focusing to selection
+- separate scrolling for navigation and content [#144](https://github.com/rello/audioplayer/issues/144)
+- first stage [#160](https://github.com/rello/audioplayer/issues/160) of Smart Playlists [#164](https://github.com/rello/audioplayer/issues/164)
+
+### Changed
+- front-end performance improvements [#130](https://github.com/rello/audioplayer/issues/130) [#149](https://github.com/rello/audioplayer/issues/149)
+- scanner performance improvements [#151](https://github.com/rello/audioplayer/issues/151)
+- selection order and naming
+- cover art for "Unknown/&#8203;Various Artists"
+- padding in share player
+- search integration improvements [#155](https://github.com/rello/audioplayer/issues/155)
+
+### Fixed
+- handling of multiple album artists of an album [#13](https://github.com/rello/audioplayer/issues/13)
+- album cover in soundbar [#133](https://github.com/rello/audioplayer/issues/133)
+- scanner adjustments [#137](https://github.com/rello/audioplayer/issues/137) [#140](https://github.com/rello/audioplayer/issues/140) [#145](https://github.com/rello/audioplayer/issues/145)
+- not playing from shared subfolders [#139](https://github.com/rello/audioplayer/issues/139)
+- mobile browser support [#141](https://github.com/rello/audioplayer/issues/141)
+- scan progress dialog reworked [#153](https://github.com/rello/audioplayer/issues/153)
+- cleaning up deleted audio files [#154](https://github.com/rello/audioplayer/issues/154)
+- search integration [#155](https://github.com/rello/audioplayer/issues/155)
+- playlist selection lost after edit or sort [#162](https://github.com/rello/audioplayer/issues/162)
+
 ## 1.4.1 - 2017-01-26
 ### Added
 - pl translation from @[andypl78](https://github.com/andypl78) [#105](https://github.com/rello/audioplayer/issues/105)
@@ -117,14 +144,14 @@ All notable changes to this project will be documented in this file.
 
 ## 1.0.2 - 2016-08-04
 ### Added
-- add file option dropdown entry
+- file option dropdown entry
 
 ### Changed
-- fix soundbar when scrolling [#25](https://github.com/rello/audioplayer/issues/25)
 - use reduced soundmanager-js for One Click Play
 
 ### Fixed
 - One Click Play [#22](https://github.com/rello/audioplayer/issues/22)
+- soundbar when scrolling [#25](https://github.com/rello/audioplayer/issues/25)
 - special characters in filenames [#26](https://github.com/rello/audioplayer/issues/26)
 - library reset does not remove playlists [#30](https://github.com/rello/audioplayer/issues/30)
 

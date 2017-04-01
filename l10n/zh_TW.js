@@ -1,8 +1,11 @@
 OC.L10N.register(
     "audioplayer",
     {
+	"Welcome to" : "Welcome to",
+	"Audio Player" : "Audio Player",
 	"Add new tracks to library" : "搜尋音樂",
 	"Scan for new audio files" : "搜尋新的音樂",
+	"Help" : "Help",
 	"Sort Playlist" : "播放清單排序",
 	"Delete Playlist" : "刪除播放清單",
 	"Delete Song from Playlist" :"刪除音樂",
@@ -23,6 +26,7 @@ OC.L10N.register(
 	"Artist" : "演出者",
 	"Year" : "年份",
 	"Album" : "專輯",
+	"Composer" : "Composer",
 	"Edit Song from Playlist" : "由播放清單編輯",
 	"Edit Song Information (ID3)" : "編輯ID3",
 	"Missing Permissions for editing ID3 Tags of song!" : "無編輯ID3的權限!",
@@ -49,12 +53,14 @@ OC.L10N.register(
 	"New Artist" : " 新藝人",
 	"Existing Genres" : "現有的曲風",
 	"New Genre" : " 新曲風",
-	"Selected Folder" : "Selected Folder",
-	"Selected Playlist" : "Selected Playlists",
-	"Selected Genre" : "Selected Genre",
-	"Selected Year" : "Selected Year",
 	"Selected" : "Selected",
+	"Selected Album" : "Selected Album",
 	"Selected Artist" : "Selected Artist",
+	"Selected Composer" : "Selected Composer",
+	"Selected Folder" : "Selected Folder",
+	"Selected Genre" : "Selected Genre",
+	"Selected Playlist" : "Selected Playlists",
+	"Selected Year" : "Selected Year",
 	"Length" : "Length"
 },
 "");

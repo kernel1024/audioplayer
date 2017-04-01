@@ -43,6 +43,7 @@ class ScannerController extends Controller {
 	private $db;
 	private $configManager;
 	private $occ_job;
+	private $no_fseek = false;
 		public function __construct(
 			$appName, 
 			IRequest $request, 
@@ -71,9 +72,9 @@ class ScannerController extends Controller {
 		$resultData=[];
 		#	\OCP\Util::writeLog('audioplayer','songFileId: '.$songFileId,\OCP\Util::DEBUG);
 		
-		#if(!class_exists('getid3_exception')) {
+		if(!class_exists('getid3_exception')) {
 			require_once __DIR__ . '/../3rdparty/getid3/getid3.php';
-		#}
+		}
 		
 		$userView =  new View('/' . $this -> userId. '/files');
 		$path = $userView->getPath($songFileId);
@@ -185,19 +186,6 @@ class ScannerController extends Controller {
 			array_unshift($rowGenre,['id' =>0,'name' =>(string)$this->l10n->t('- choose -')]);
 			$resultData['genres'] = $rowGenre;
 			 
-			 //Genre
-			# $ArrayOfGenresTemp = \getid3_id3v1::ArrayOfGenres();   // get the array of genres
-			#$ArrayOfGenres[] = ['name' =>(string)$this->l10n->t('- choose -')];
-			#foreach ($ArrayOfGenresTemp as $key => $value) {      // change keys to match displayed value
-			#	$ArrayOfGenres[] = ['name' => $value];
-			#}
-			#
-			#unset($ArrayOfGenresTemp);                            // remove temporary array
-			#
-			#usort($ArrayOfGenres,array('OCA\audioplayer\Controller\ScannerController','compareGenreNames'));   
-			#                   
-			# $resultData['genres'] = $ArrayOfGenres;
-			 
 			$result = [
 				'status' => 'success',
 				'data' => $resultData,
@@ -214,10 +202,6 @@ class ScannerController extends Controller {
 			return $response;
 		}
 		
-	}
-	
-	public static function compareGenreNames($a, $b) {
-			return \OCP\Util::naturalSortCompare($a['name'], $b['name']);
 	}
 	
 	/**
@@ -250,9 +234,9 @@ class ScannerController extends Controller {
 			$trackNumber = $pTrack.(!empty($pTrackTotal) ? '/'.$pTrackTotal : '');
 		}
 		
-		#if(!class_exists('getid3_exception')) {
+		if(!class_exists('getid3_exception')) {
 			require_once __DIR__ . '/../3rdparty/getid3/getid3.php';
-		#}
+		}
 		
 		require_once __DIR__ . '/../3rdparty/getid3/write.php';
 		
@@ -450,9 +434,19 @@ class ScannerController extends Controller {
 	 * 
 	 */
 	public function scanForAudios($userId = null, $output = null, $debug = null) {
+
+		$pProgresskey 			= $this -> params('progresskey');
+		$scanstop 				= $this -> params('scanstop');
+		$this->occ_job 			= false;
+		
+		if (isset($scanstop))	{
+			\OC::$server->getCache()->remove($pProgresskey);
+			$params = ['status' => 'stopped'];
+			$response = new JSONResponse($params);
+			return $response;				
+		}
 	
 		// check if scanner is started from web or occ
-		$this->occ_job = false;
 		if($userId !== null) {
 			$this->occ_job = true;
 			$this->userId = $userId;
@@ -460,6 +454,7 @@ class ScannerController extends Controller {
 			$this->l10n = $this->languageFactory->get('audioplayer', $languageCode);
 		} 
 		
+		$this->progresskey 		= $pProgresskey;
 		$parentId_prev			= false;
 		$counter 				= 0;
 		$counter_new 			= 0;
@@ -489,55 +484,36 @@ class ScannerController extends Controller {
 								'option_tags_html'=>$option_tags_html
 								));
 
-		$pProgresskey = $this -> params('progresskey');
-		$pGetprogress = $this -> params('getprogress');
+		// ??? to be checked why ???
 		\OC::$server->getSession()->close();
-				
-		if (isset($pProgresskey) && isset($pGetprogress)) {
-				$aCurrent = \OC::$server->getCache()->get($pProgresskey);
-				$aCurrent = json_decode($aCurrent);
-				
-				$numSongs = (isset($aCurrent->{'all'})?$aCurrent->{'all'}:0);
-				$currentSongCount = (isset($aCurrent->{'current'})?$aCurrent->{'current'}:0);
-				$currentSong = (isset($aCurrent->{'currentsong'})?$aCurrent->{'currentsong'}:'');
-				$percent = (isset($aCurrent->{'percent'})?$aCurrent->{'percent'}:'');
-			
-				if($percent === ''){
-					$percent = 0;
-				}
-				$params = ['status' => 'success', 'percent' =>$percent , 'currentmsg' => $currentSong.' '.$percent.'% ('.$currentSongCount.'/'.$numSongs.')'];
-				$response = new JSONResponse($params);
-				return $response;	
-		}
-	
+
+		if(!$this->occ_job) $this->updateProgress(0, $output, $debug);
+					
 		// get only the relevant audio files
 		$audios = $this->getAudioObjects($output, $debug);
-		
-		$this->progresskey = $pProgresskey;
-		$currentIntArray=['percent' => 0, 'all' => $this->numOfSongs, 'current' => 0, 'currentsong' => ''];
-		if(!$this->occ_job) \OC::$server->getCache()->set($this->progresskey, $currentIntArray, 100);
-		    								
+			    								
 		if ($debug) $output->writeln("Start processing of <info>ID3s</info>");
 		foreach($audios as $audio) {
 			
+				//check if scan is still supposed to run, or if dialog was closed in web already
+				if (!$this->occ_job) {
+					$scan_running = \OC::$server->getCache()->get($pProgresskey);
+					if (!$scan_running) break;
+				}
+
 				$this->currentSong = $audio->getPath();
 				$this->updateProgress(intval(($this->abscount / $this->numOfSongs)*100), $output, $debug);
 				$counter++;
 				$this->abscount++;
 
-				$fileName = $audio->getStorage()->getLocalFile($audio->getInternalPath());				
-				$ThisFileInfo = $getID3->analyze($fileName);
-
-				if (!$audio->getStorage()->isLocal($audio->getInternalPath())) {
-					unlink($fileName);
-				}
-			
+				$ThisFileInfo = $this->analyze($audio, $getID3, $output, $debug);				
 				if($cyrillic_support === 'checked') $ThisFileInfo = $this->cyrillic($ThisFileInfo);
-
 				\getid3_lib::CopyTagsToComments($ThisFileInfo);
+
 				# catch issue when getID3 does not bring a result in case of corrupt file or fpm-timeout
 				if (!isset($ThisFileInfo['bitrate']) AND !isset($ThisFileInfo['playtime_string'])) {
-					\OCP\Util::writeLog('audioplayer', 'Error with getID3. Does not seem to be a valid audio file: '.$audio->getPath(), \OCP\Util::DEBUG);
+					\OCP\Util::writeLog('audioplayer', 'Error with getID3. Does not seem to be a valid audio file: '. $audio->getPath(), \OCP\Util::DEBUG);
+					if ($debug) $output->writeln("       Error with getID3. Does not seem to be a valid audio file");
 					$error_file.=$audio->getName().'<br />';
 					$error_count++;
 					continue;
@@ -564,28 +540,28 @@ class ScannerController extends Controller {
 					$artist=$ThisFileInfo['comments']['artist'][0];
 				}
 				$iArtistId= $this->writeArtistToDB($artist);
-				
+
 				# write albumartist if available
-				# if no albumartist, no artist is stored
-				# in musiccontroller loadArtistsToAlbum() we will use this
-				# if no album artist is stored, load all artists from the tracks
-				# if all the same - display it as album artist
-				# if different track-artists, display "various"
-				# if Album Artist is maintained
-				if(isset($ThisFileInfo['comments']['band'][0]) and rawurlencode($ThisFileInfo['comments']['band'][0]) !== '%FF%FE'){
-					$album_artist=$ThisFileInfo['comments']['band'][0];
-					$iAlbumArtistId= $this->writeArtistToDB($album_artist);
-					$iAlbumId = $this->writeAlbumToDB($album,(int)$year,$iAlbumArtistId);
-				} else {
-					$iAlbumId = $this->writeAlbumToDB($album,(int)$year,NULL);
+				# if no albumartist, NO artist is stored on album level
+				# in musiccontroller loadArtistsToAlbum() takes over deriving the artists from the album tracks
+				# MP3, FLAC & MP4 have different tags for albumartist
+				$iAlbumArtistId	= NULL;
+				$album_artist	= NULL;				
+				$keys		= ['band', 'album_artist', 'albumartist', 'album artist'];
+				for ($i = 0; $i < count($keys); $i++){
+					if (isset($ThisFileInfo['comments'][$keys[$i]][0]) and rawurlencode($ThisFileInfo['comments'][$keys[$i]][0]) !== '%FF%FE'){
+						$album_artist=$ThisFileInfo['comments'][$keys[$i]][0];
+						break;
+					}
 				}
-				
+				if (isset($album_artist)) { $iAlbumArtistId = $this->writeArtistToDB($album_artist); }
+				$iAlbumId = $this->writeAlbumToDB($album,(int)$year,$iAlbumArtistId);
+
 				$name = $audio->getName();
 				if(isset($ThisFileInfo['comments']['title'][0]) and rawurlencode($ThisFileInfo['comments']['title'][0]) !== '%FF%FE'){
 					$name=$ThisFileInfo['comments']['title'][0];
 				}
 				
-				//$this->currentSong = $name.' - '.$artist;
 				$trackNumber = '';
 				if(isset($ThisFileInfo['comments']['track_number'][0])){
 					$trackNumber=$ThisFileInfo['comments']['track_number'][0];
@@ -596,12 +572,6 @@ class ScannerController extends Controller {
 					$bitrate=$ThisFileInfo['bitrate'];
 				}
 				
-				$cleanTrackNumber=$trackNumber;
-				if(stristr($trackNumber,'/')){
-					$temp=explode('/',$trackNumber);
-					$cleanTrackNumber=trim($temp[0]);
-				}
-
 				$parentId = $audio->getParent()->getId();
 
 				if ($parentId === $parentId_prev AND $folderpicture) {
@@ -638,8 +608,8 @@ class ScannerController extends Controller {
 					$playTimeString=$ThisFileInfo['playtime_string'];
 				}
 				$aTrack = [
-					'title' => $name,
-					'number' =>(int)$cleanTrackNumber,
+					'title' => $this->truncate($name, '256'),
+					'number' => $this->normalizeInteger($trackNumber),
 					'artist_id' => (int)$iArtistId,
 					'album_id' =>(int) $iAlbumId,
 					'length' => $playTimeString,
@@ -647,7 +617,7 @@ class ScannerController extends Controller {
 					'bitrate' => (int)$bitrate,
 					'mimetype' => $audio->getMimetype(),
 					'genre' => (int)$iGenreId,
-					'year' => (int)$year,
+					'year' => $this->normalizeInteger($year),
 					'folder_id' => $parentId,
 				];
 				
@@ -708,23 +678,30 @@ class ScannerController extends Controller {
 	 */
 	
 	private function writeAlbumToDB($sAlbum,$sYear,$iArtistId){
-			if ($this->db->insertIfNotExist('*PREFIX*audioplayer_albums', ['user_id' => $this->userId, 'name' => $sAlbum])) {
-				$insertid = $this->db->getInsertId('*PREFIX*audioplayer_albums');
-				if ($iArtistId) {
-					$stmt = $this->db->prepareQuery( 'UPDATE `*PREFIX*audioplayer_albums` SET `year`= ?, `artist_id`= ? WHERE `id` = ? AND `user_id` = ?' );
-					$stmt->execute(array((int)$sYear, $iArtistId, $insertid, $this->userId));
-				} else {
-					$stmt = $this->db->prepareQuery( 'UPDATE `*PREFIX*audioplayer_albums` SET `year`= ? WHERE `id` = ? AND `user_id` = ?' );
-					$stmt->execute(array((int)$sYear, $insertid, $this->userId));
-				} 
-				$this->iAlbumCount++;
-				return $insertid;
-			}else{
-				$stmt = $this->db->prepareQuery( 'SELECT `id` FROM `*PREFIX*audioplayer_albums` WHERE `user_id` = ? AND `name` = ?' );
-				$result = $stmt->execute(array($this->userId, $sAlbum));
-				$row = $result->fetchRow();
-				return $row['id'];
-			}
+		$sAlbum = $this->truncate($sAlbum, '256');	
+		$sYear = $this->normalizeInteger($sYear);			
+		if ($this->db->insertIfNotExist('*PREFIX*audioplayer_albums', ['user_id' => $this->userId, 'name' => $sAlbum])) {
+			$insertid = $this->db->getInsertId('*PREFIX*audioplayer_albums');
+			if ($iArtistId) {
+				$stmt = $this->db->prepareQuery( 'UPDATE `*PREFIX*audioplayer_albums` SET `year`= ?, `artist_id`= ? WHERE `id` = ? AND `user_id` = ?' );
+				$stmt->execute(array((int)$sYear, $iArtistId, $insertid, $this->userId));
+			} else {
+				$stmt = $this->db->prepareQuery( 'UPDATE `*PREFIX*audioplayer_albums` SET `year`= ? WHERE `id` = ? AND `user_id` = ?' );					
+				$stmt->execute(array((int)$sYear, $insertid, $this->userId));
+			} 
+			$this->iAlbumCount++;
+			return $insertid;
+		}else{
+			$stmt = $this->db->prepareQuery( 'SELECT `id`, `artist_id` FROM `*PREFIX*audioplayer_albums` WHERE `user_id` = ? AND `name` = ?' );
+			$result = $stmt->execute(array($this->userId, $sAlbum));
+			$row = $result->fetchRow();
+			if ((int)$row['artist_id'] !== (int)$iArtistId) {
+				$various_id = $this->writeArtistToDB($this->l10n->t('Various Artists'));
+				$stmt = $this->db->prepareQuery( 'UPDATE `*PREFIX*audioplayer_albums` SET `artist_id`= ? WHERE `id` = ? AND `user_id` = ?' );					
+				$stmt->execute(array($various_id, $row['id'], $this->userId));
+			} 
+			return $row['id'];
+		}
 	}
 	
 	/**
@@ -736,7 +713,7 @@ class ScannerController extends Controller {
 	 */
 	 
 	private function writeGenreToDB($sGenre){
-		
+		$sGenre = $this->truncate($sGenre, '256');		
 		if ($this->db->insertIfNotExist('*PREFIX*audioplayer_genre', ['user_id' => $this->userId, 'name' => $sGenre])) {
 			$insertid = $this->db->getInsertId('*PREFIX*audioplayer_genre');
 			return $insertid;
@@ -757,7 +734,7 @@ class ScannerController extends Controller {
 	 * @return int id
 	 */
 	private function writeArtistToDB($sArtist){
-		
+		$sArtist = $this->truncate($sArtist, '256');
 		if ($this->db->insertIfNotExist('*PREFIX*audioplayer_artists', ['user_id' => $this->userId, 'name' => $sArtist])) {
 			$insertid = $this->db->getInsertId('*PREFIX*audioplayer_artists');
 			return $insertid;
@@ -805,6 +782,32 @@ class ScannerController extends Controller {
 		}else{
 			return false;
 		}
+	}
+
+	/**
+	 * Report scanning Progress back to web frontend - e.g. progress bar
+	 * @NoAdminRequired
+	 * 
+	 */
+	public function getProgress() {
+		$pProgresskey = $this -> params('progresskey');
+		\OC::$server->getSession()->close();
+					
+		$aCurrent = \OC::$server->getCache()->get($pProgresskey);
+		if ($aCurrent) {
+				$aCurrent = json_decode($aCurrent);
+				
+				$numSongs = (isset($aCurrent->{'all'})?$aCurrent->{'all'}:0);
+				$currentSongCount = (isset($aCurrent->{'current'})?$aCurrent->{'current'}:0);
+				$currentSong = (isset($aCurrent->{'currentsong'})?$aCurrent->{'currentsong'}:'');
+				$percent = (isset($aCurrent->{'percent'})?$aCurrent->{'percent'}:0);
+			
+				$params = ['status' => 'success', 'percent' =>$percent , 'msg' => $currentSong , 'prog' => $percent.'% ('.$currentSongCount.' / '.$numSongs.')'];
+		} else {
+			$params = ['status' => 'false'];
+		}
+		$response = new JSONResponse($params);
+		return $response;	
 	}
 
 	/*
@@ -947,6 +950,62 @@ class ScannerController extends Controller {
 		return true;
 	}
 	
+	/**
+	 * truncates fiels do DB-field size
+	 * 
+	 * @param $string
+	 * @param $length
+	 * @param $dots
+	 * @return string
+	 */
+	private function truncate($string, $length, $dots = "...") {
+    	return (strlen($string) > $length) ? substr($string, 0, $length - strlen($dots)) . $dots : $string;
+	}
 
-	
+	/**
+	 * validate unsigned int values
+	 * 
+	 * @return int value
+	 */
+
+	private function normalizeInteger($value) {
+		// convert format '1/10' to '1' and '-1' to null
+		$tmp = explode('/', $value);
+		$value = $tmp[0];
+		if(is_numeric($value) && ((int)$value) > 0) {
+			$value = (int)$value;
+		} else {
+			$value = 0;
+		}
+		return $value;
+	}
+
+	/**
+	 * Analyze ID3 Tags
+	 * if fseek is not possible, libsmbclient-php is not installed or an external storage is used which does not support this.
+	 * then fallback to slow extraction via tmpfile
+	 * 
+	 * @param $audio object
+	 * @return $ThisFileInfo
+	 */
+	private function analyze($audio, $getID3, $output = null, $debug = null) {
+
+		$handle = $audio->fopen('rb');
+		if (@fseek($handle, -24, SEEK_END) === 0) {
+				$ThisFileInfo = $getID3->analyze($audio->getPath(), $handle, $audio->getSize());
+		} else {
+			if (!$this->no_fseek) {
+				if ($debug) $output->writeln("Attention: Only slow indexing due to server config. See Audio Player wiki on GitHub for details.");
+				\OCP\Util::writeLog('audioplayer', 'Attention: Only slow indexing due to server config. See Audio Player wiki on GitHub for details.', \OCP\Util::DEBUG);
+				$this->no_fseek = true;
+			}
+			$fileName = $audio->getStorage()->getLocalFile($audio->getInternalPath());				
+			$ThisFileInfo = $getID3->analyze($fileName);
+
+			if (!$audio->getStorage()->isLocal($audio->getInternalPath())) {
+				unlink($fileName);
+			}	
+		} 
+		return $ThisFileInfo;
+	}				
 }

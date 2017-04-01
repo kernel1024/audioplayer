@@ -1,9 +1,11 @@
 OC.L10N.register(
     "audioplayer",
     {
- 
+	"Welcome to" : "Welcome to",
+	"Audio Player" : "Odtwarzacz Audio",
 	"Add new tracks to library" : "Dodaj nową piosenkę do playlisty",
 	"Scan for new audio files" : "Skanowanie w poszukiwaniu nowych plików audio",
+	"Help" : "Help",
 	"Sort Playlist" : "Sortuj Playlistę",
 	"Delete Playlist" : "Usuń Playlistę",
 	"Delete Song from Playlist" :"Usuń piosenkę z Playlisty",
@@ -24,6 +26,7 @@ OC.L10N.register(
 	"Artist" : "Artysta",
 	"Year" : "Rok",
 	"Album" : "Album",
+	"Composer" : "Composer",
 	"Edit Song from Playlist" : "Edycja utworu z playlisty",
 	"Edit track information (ID3)" : "Edytuj informacje utwóru (ID3)",
 	"Missing Permissions for editing ID3 Tags of song!" : "Brak uprawnień do edycji tagów ID3 piosenki!",
@@ -50,12 +53,14 @@ OC.L10N.register(
 	"New Artist" : "Nowy artysta",
 	"Existing Genres" : "Istniejące gatunki muzyczne",
 	"New Genre" : "Nowy gatunek muzyczny",
-	"Selected Folder" : "Wybrany folder",
-	"Selected Playlist" : "Wybrana Playlista",
-	"Selected Genre" : "Wybrany gatunek",
-	"Selected Year" : "Wybrany rok",
 	"Selected" : "Wybrany",
+	"Selected Album" : "Wybrany album",
 	"Selected Artist" : "Wybrany artysta",
+	"Selected Composer" : "Selected Composer",
+	"Selected Folder" : "Wybrany folder",
+	"Selected Genre" : "Wybrany gatunek",
+	"Selected Playlist" : "Wybrana Playlista",
+	"Selected Year" : "Wybrany rok",
 	"Length" : "Długość"
 },
 "");
