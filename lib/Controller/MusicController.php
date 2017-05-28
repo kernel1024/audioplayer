@@ -418,11 +418,11 @@ class MusicController extends Controller {
 	private function sortArrayByFields($data)
 	{
 		foreach ($data as $key => $row) {
-			$first[$key] = $row['art'];
-			$second[$key] = $row['nam'];
-			// i have too many VA albums... but this setting needs to be configurable via interface
-			$first[$key] = $row['nam'];
-			$second[$key] = $row['art'];
+    		$first[$key] = $row['art'];
+    		$second[$key] = $row['nam'];
+    		// i have too many VA albums... but this setting needs to be configurable via interface
+    		$first[$key] = $row['nam'];
+    		$second[$key] = $row['art'];
 		}
 		array_multisort($first, SORT_ASC, SORT_STRING|SORT_FLAG_CASE,$second , SORT_ASC, SORT_STRING|SORT_FLAG_CASE, $data);
 		return $data;
