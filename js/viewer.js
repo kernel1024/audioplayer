@@ -46,7 +46,6 @@ var audioPlayer = {
 			    });
 			    
 			    	audioPlayer.player.play();
-			  
 			  },
 			  ontimeout: function() {
 			    // Hrmm, SM2 could not start. Missing SWF? Flash blocked? Show an error, etc.?
@@ -58,31 +57,37 @@ var audioPlayer = {
 			//$('#filestable').find('.thumbnail i.ioc-play').show();
 			audioPlayer.player=null;
 		}
-		
-		
-		
 	},
 };
 $(document).ready(function() {	
 	if (OCA.Files && OCA.Files.fileActions) {
 		
-	var mime_array = ['audio/mpeg', 'audio/mp4', 'audio/m4b', 'audio/ogg', 'audio/wav'];
-		
-		for (var i=0; i<mime_array.length; i++) {
-				
-			OCA.Files.fileActions.registerAction({
-				name: 'audioplayer play',
-				displayName: t('audioplayer', 'Play'),
-				mime: mime_array[i],
-				permissions: OC.PERMISSION_READ,
-				icon: function () {return OC.imagePath('core', 'actions/sound');},
-				actionHandler: audioPlayer.onView
+	var mime_array = ['audio/mpeg', 'audio/mp4', 'audio/m4b', 'audio/ogg', 'audio/wav', 'audio/flac'];
+		if(audioPlayer.player == null){
+			soundManager.setup({
+				url:OC.filePath('audioplayer', 'js', 'soundmanager2.swf'),
+			  	onready: function() {
+				    audioPlayer.player = soundManager.createSound({
+					});
+			    
+					var can_play = soundManager.html5;			  
+					for (var i=0; i<mime_array.length; i++) {	
+					if (can_play[mime_array[i]] === true) {
+						OCA.Files.fileActions.registerAction({
+							name: 'audioplayer play',
+							displayName: t('audioplayer', 'Play'),
+							mime: mime_array[i],
+							permissions: OC.PERMISSION_READ,
+							icon: function () {return OC.imagePath('core', 'actions/sound');},
+							actionHandler: audioPlayer.onView
+						});
+						OCA.Files.fileActions.register(mime_array[i], 'View', OC.PERMISSION_READ, '', audioPlayer.onView);
+						OCA.Files.fileActions.setDefault(mime_array[i], 'View');
+					}
+					}//end mime-loop
+				},
 			});
-
-			OCA.Files.fileActions.register(mime_array[i], 'View', OC.PERMISSION_READ, '', audioPlayer.onView);
-			OCA.Files.fileActions.setDefault(mime_array[i], 'View');
-
-		}//end mime-loop
+		}
 
 		if($('#header').hasClass('share-file')){
 			
@@ -114,17 +119,12 @@ $(document).ready(function() {
 			audioInnerDiv.append(audioLink);
 			audioOuterDiv.append(audioInnerDiv);
 			audioContainer.append(audioOuterDiv);
-			OC.addScript('audioplayer','berniecode-animator',function(){
-				OC.addScript('audioplayer','360player',function(){
-					soundManager.setup({
-					  url:'./apps/audioplayer/js/',
-					 });
-					 
-				});
+			soundManager.setup({
+				url:'./apps/audioplayer/js/',
 			});
 			
 			$('#imgframe').before($('<div/>').attr('id','id3'));
-				url = OC.generateUrl('apps/audioplayer/getpublicaudioinfo{file}?token={token}',{'file':fileName,'token':token},{escape:false});
+				url = OC.generateUrl('apps/audioplayer/getpublicaudioinfo?token={token}',{'token':token},{escape:false});
 				
 				$.ajax({
 					type : 'GET',
@@ -132,30 +132,28 @@ $(document).ready(function() {
 					success : function(jsondata) {
 						if(jsondata.status == 'success'){
 							var playlistsdata=jsondata.data;
-							//$(".directLink").remove();
-							//$(".directDownload").remove();
 							$('#content-wrapper').css({'padding-top':'0px'});
 							$('#id3').append('<div>&nbsp;</div>');
-							$('#id3').append('<div><b>'+t('audioplayer','Title')+':</b>&nbsp;'+ jsondata.data.title +'</div>');
-							$('#id3').append('<div><b>'+t('audioplayer','Artist')+':</b>&nbsp;'+ jsondata.data.artist +'</div>');
-							$('#id3').append('<div><b>'+t('audioplayer','Album')+':</b>&nbsp;'+ jsondata.data.album +'</div>');
-							$('#id3').append('<div><b>'+t('audioplayer','Genre')+':</b>&nbsp;'+ jsondata.data.genre +'</div>');
-							$('#id3').append('<div><b>'+t('audioplayer','Year')+':</b>&nbsp;'+ jsondata.data.year +'</div>');
-							$('#id3').append('<div><b>'+t('audioplayer','Length')+':</b>&nbsp;'+ jsondata.data.length +'</div>');
-							$('#id3').append('<div><b>'+t('audioplayer','Bitrate')+':</b>&nbsp;'+ jsondata.data.bitrate +'&nbsp;kbps</div>');
-							//$('#id3').append('<div><b>'+t('audioplayer','Composer')+':</b>&nbsp;'+ jsondata.data.composer +'</div>');
+							$('#id3').append($('<div/>').append($('<b/>').text(t('audioplayer','Title')+': ')).append($('<span/>').text(jsondata.data.title)));
+							$('#id3').append($('<div/>').append($('<b/>').text(t('audioplayer','Subtitle')+': ')).append($('<span/>').text(jsondata.data.subtitle)));
+							$('#id3').append($('<div/>').append($('<b/>').text(t('audioplayer','Artist')+': ')).append($('<span/>').text(jsondata.data.artist)));
+							$('#id3').append($('<div/>').append($('<b/>').text(t('audioplayer','Composer')+': ')).append($('<span/>').text(jsondata.data.composer)));
+							$('#id3').append($('<div/>').append($('<b/>').text(t('audioplayer','Album')+': ')).append($('<span/>').text(jsondata.data.album)));
+							$('#id3').append($('<div/>').append($('<b/>').text(t('audioplayer','Genre')+': ')).append($('<span/>').text(jsondata.data.genre)));
+							$('#id3').append($('<div/>').append($('<b/>').text(t('audioplayer','Year')+': ')).append($('<span/>').text(jsondata.data.year)));
+							$('#id3').append($('<div/>').append($('<b/>').text(t('audioplayer','Disc')+'-'+t('audioplayer','Track')+': ')).append($('<span/>').text(jsondata.data.disc +'-'+ jsondata.data.number)));
+							$('#id3').append($('<div/>').append($('<b/>').text(t('audioplayer','Length')+': ')).append($('<span/>').text(jsondata.data.length)));
+							$('#id3').append($('<div/>').append($('<b/>').text(t('audioplayer','Bitrate')+': ')).append($('<span/>').text(jsondata.data.bitrate+' kbps')));
+							$('#id3').append($('<div/>').append($('<b/>').text(t('audioplayer','MIME type')+': ')).append($('<span/>').text(jsondata.data.mimetype)));
 							$('#imgframe').css({'padding-top':'20px'});
 							$('#imgframe').css({'padding-bottom':'0px'});
+							$('.publicpreview').css({'max-width':'0px !important'});
 							$('.directDownload').css({'padding-top':'20px'});
 							$('.directLink').css({'padding-top':'0px'});
 						}
 					}
 				});
 		}
-			
-	
-			 
 		}
-		//$(document).keydown(videoCoolViewer.onKeyDown);
 	}
 });

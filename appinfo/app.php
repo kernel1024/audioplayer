@@ -23,7 +23,9 @@ $request = \OC::$server->getRequest();
 			\OCP\Util::addStyle( 'audioplayer', 'style');
 			
 			\OCP\Util::addScript( 'audioplayer', 'soundmanager2-nodebug-jsmin' );
-			\OCP\Util::addScript( 'audioplayer', 'viewer' );
+			\OCP\Util::addScript( 'audioplayer', 'viewer-min' );
+			\OCP\Util::addScript( 'audioplayer', 'berniecode-animator-min' );
+			\OCP\Util::addScript( 'audioplayer', '360player-min' );
 		}
 	}
 
@@ -44,4 +46,6 @@ $c->getServer()->getNavigationManager()->add($navigationEntry);
 
 $c->getServer()->getSearch()->registerProvider('OCA\audioplayer\Search\Provider', array('app'=>'audioplayer','apps' => array('files')));	
 
-\OCP\App::registerPersonal($c->query('AppName'), 'settings/user');
+\OCP\App::registerPersonal($c->query('AppName'), 'lib/Settings/User');
+
+\OCP\Util::connectHook('OC_User', 'post_deleteUser', 'OCA\audioplayer\Hooks\UserHooks', 'deleteUser'); //DELETE

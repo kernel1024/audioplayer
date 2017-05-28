@@ -284,6 +284,24 @@
 				<type>integer</type>
 				<notnull>false</notnull>
 			</field>
+			<field>
+				<name>disc</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+				<unsigned>true</unsigned>
+			</field>
+			<field>
+				<name>composer</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>256</length>
+			</field>
+			<field>
+				<name>subtitle</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>256</length>
+			</field>
 
 			<index>
 				<name>aa_tracks_artist_id_idx</name>
@@ -316,5 +334,48 @@
 			</index>
 		</declaration>
 	</table>
-
+	<table>
+		<name>*dbprefix*audioplayer_statistics</name>
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+			<field>
+				<name>track_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>playtime</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+			</field>
+			<field>
+				<name>playcount</name>
+				<type>integer</type>
+				<notnull>false</notnull>
+			</field>
+			<index>
+				<name>aa_statistics_file_user_id_idx</name>
+				<unique>true</unique>
+				<field>
+					<name>track_id</name>
+				</field>
+				<field>
+					<name>user_id</name>
+				</field>
+			</index>
+		</declaration>
+	</table>
 </database>

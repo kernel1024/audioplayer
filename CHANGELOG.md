@@ -1,9 +1,71 @@
 # Changelog
-All notable changes to this project will be documented in this file.
+All notable changes to the Audio Player project will be documented in this file.
 
 ## Unreleased
 ### Added
+- 
+
+### Changed
+- pl translation [#197](https://github.com/rello/audioplayer/pull/197) [#197](https://github.com/rello/audioplayer/pull/197) @[andypl78](https://github.com/andypl78)
+
+### Deprecated
+- 
+
+### Removed
+- 
+
+### Fixed
+- 
+
+### Security
+- 
+
+## 2.0.1 - 2017-05-27
+### Added
+- zh_CN translation [#193](https://github.com/rello/audioplayer/pull/193) @[TheOne1006](https://github.com/TheOne1006)
+
+### Changed
+- zh_TW translation [#173](https://github.com/rello/audioplayer/issues/173) @[sbr9150](https://github.com/sbr9150)
+- uk translation [#195](https://github.com/rello/audioplayer/pull/195) @[BODYA7979](https://github.com/BODYA7979)
+
+### Fixed
+- `DISCNUMBER` tag ignored in VorbisComment [#196](https://github.com/rello/audioplayer/issues/196)
+
+## 2.0.0 - 2017-05-24
+### Added
 - FLAC support [#45](https://github.com/rello/audioplayer/issues/45)
+- favorites integration [#176](https://github.com/rello/audioplayer/issues/176) in Smart Playlists [#164](https://github.com/rello/audioplayer/issues/164)
+- second stage [#177](https://github.com/rello/audioplayer/issues/177) of Smart Playlists [#164](https://github.com/rello/audioplayer/issues/164)
+- Dynamic Playlists [#186](https://github.com/rello/audioplayer/issues/186)
+- dragging also from selected lists into playlists [#168](https://github.com/rello/audioplayer/issues/168)
+- support for ownCloud 10.0 and Nextcloud 12 [#183](https://github.com/rello/audioplayer/issues/183)
+- PSR-4 autoloader compatibility [#184](https://github.com/rello/audioplayer/issues/184)
+- disc, composer, and subtitle to metadata [#184](https://github.com/rello/audioplayer/issues/184) (thanks @[Faldon](https://github.com/Faldon))
+- notify user when new/unscanned tracks are available [#188](https://github.com/rello/audioplayer/issues/188)
+- UserHooks: library cleanup when user is removed
+- more metadata to Share Player
+
+### Changed
+- zh_TW translation [#173](https://github.com/rello/audioplayer/issues/173) @[sbr9150](https://github.com/sbr9150)
+- translation sources reworked
+- CSS changes for navigation menu [#179](https://github.com/rello/audioplayer/issues/179) @[artemanufrij](https://github.com/artemanufrij)
+- compress `.js` files [#191](https://github.com/rello/audioplayer/issues/191)
+
+### Deprecated
+- `OCP\IDB` replaced by `OCP\IDbConnection` [#183](https://github.com/rello/audioplayer/issues/183)
+- `tipsy()` replaced by `tooltips()` [#189](https://github.com/rello/audioplayer/issues/189)
+
+### Removed
+- support for Nextcloud 9
+
+### Fixed
+- missing strings added to language files
+- sorting albums by disc and track [#88](https://github.com/rello/audioplayer/issues/88) [#174](https://github.com/rello/audioplayer/issues/174) (thanks @[Faldon](https://github.com/Faldon))
+- limit year to 4 digits
+- undefined variable during empty category [#187](https://github.com/rello/audioplayer/issues/187) 
+
+### Security
+- avoid XSS in metadata
 
 ## 1.5.1 - 2017-04-08
 ### Fixed
@@ -39,7 +101,7 @@ All notable changes to this project will be documented in this file.
 
 ## 1.4.1 - 2017-01-26
 ### Added
-- pl translation from @[andypl78](https://github.com/andypl78) [#105](https://github.com/rello/audioplayer/issues/105)
+- pl translation [#105](https://github.com/rello/audioplayer/issues/105) @[andypl78](https://github.com/andypl78)
 - support for PHP 7.1
 
 ### Changed
@@ -51,20 +113,20 @@ All notable changes to this project will be documented in this file.
 
 ### Removed
 - support for ownCloud 8
-- support for PHP <5.6
+- support for PHP &#60;5.6
 - album year from search criteria [#116](https://github.com/rello/audioplayer/issues/116)
 
 ### Fixed
 - Chrome CSS issue with only one track in album [#104](https://github.com/rello/audioplayer/issues/104)
-- correct arrays and remove obsolete functions (thanks @[mc-comanescu](https://github.com/mc-comanescu) and @[rseabra](https://github.com/rseabra)) [#110](https://github.com/rello/audioplayer/issues/110) [#123](https://github.com/rello/audioplayer/issues/123)
-- correct ORDER BY syntax for PostgreSQL database (thanks @[Turgon37](https://github.com/turgon37)) [#112](https://github.com/rello/audioplayer/issues/112)
+- correct arrays and remove obsolete functions [#110](https://github.com/rello/audioplayer/issues/110) [#123](https://github.com/rello/audioplayer/issues/123) (thanks @[mc-comanescu](https://github.com/mc-comanescu) and @[rseabra](https://github.com/rseabra))
+- correct ORDER BY syntax for PostgreSQL database [#112](https://github.com/rello/audioplayer/issues/112) (thanks @[Turgon37](https://github.com/turgon37))
 - album cover not written to database [#113](https://github.com/rello/audioplayer/issues/113)
 - catch Unicode characters in artist name [#118](https://github.com/rello/audioplayer/issues/118)
 - welcome screen not shown at first start [#121](https://github.com/rello/audioplayer/issues/121) 
 
 ## 1.4.0 - 2016-12-15
 ### Added
-- uk translation from @[BODYA7979](https://github.com/BODYA7979) [#94](https://github.com/rello/audioplayer/issues/94)
+- uk translation [#94](https://github.com/rello/audioplayer/issues/94) @[BODYA7979](https://github.com/BODYA7979)
 - folders as additional filter category [#98](https://github.com/rello/audioplayer/issues/98)
 - search for cover in album folder [#24](https://github.com/rello/audioplayer/issues/24)
 - Opus support [#92](https://github.com/rello/audioplayer/issues/92)
@@ -87,9 +149,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - command-line support for library scan and reset [#72](https://github.com/rello/audioplayer/issues/72)
 - select a dedicated folder for scanning in personal settings [#79](https://github.com/rello/audioplayer/issues/79)
-- exclude folders from scanning via .noaudio file [#79](https://github.com/rello/audioplayer/issues/79)
+- exclude folders from scanning via `.noaudio` file [#79](https://github.com/rello/audioplayer/issues/79)
 - significantly reduce database reads during scanning [#79](https://github.com/rello/audioplayer/issues/79)
-- cleanup of classes; move from \OC\Files\View to \OCP\Files\IRootFolder [#72](https://github.com/rello/audioplayer/issues/72)
+- cleanup of classes; move from `OC\Files\View` to `OCP\Files\IRootFolder` [#72](https://github.com/rello/audioplayer/issues/72)
 
 ### Changed
 - neutral cover for unknown album [#16](https://github.com/rello/audioplayer/issues/16)
@@ -166,7 +228,7 @@ All notable changes to this project will be documented in this file.
 
 ## 1.0.1 - 2016-07-23
 ### Added
-- zh-TW translation from @[sbr9150](https://github.com/sbr9150)
+- zh_TW translation @[sbr9150](https://github.com/sbr9150)
 
 ### Fixed
 - spinning wheel when file was deleted [#19](https://github.com/rello/audioplayer/issues/19)
@@ -176,7 +238,7 @@ All notable changes to this project will be documented in this file.
 
 ## 1.0.0 - 2016-07-18
 ### Added
-- fullscreen mode as default (hide app-navigation)
+- fullscreen mode as default (hide app navigation)
 - playlist section conditional display
 - genre view (besides albums and custom playlists)
 

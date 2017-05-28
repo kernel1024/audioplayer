@@ -15,7 +15,9 @@ use \OCA\audioplayer\AppInfo\Application;
 $app = new Application();
 $c = $app->getContainer();
 
+$c->query('API')->addScript('soundmanager2-nodebug-jsmin');
 $c->query('API')->addScript('settings-user');
+$c->query('API')->addStyle('settings-user');
 
 $tmpl = new \OCP\Template($c->query('AppName'), 'settings-user');
 $tmpl->assign('category', $c->query('Config')->getUserValue($c->query('UserId'), $c->query('AppName'), 'category'));

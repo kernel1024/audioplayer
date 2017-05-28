@@ -2,14 +2,13 @@
 	style('audioplayer', '3rdparty/fontello/css/animation');	
 	style('audioplayer', '3rdparty/fontello/css/fontello');
 	style('audioplayer', 'jquery.Jcrop');	
-	style('audioplayer','bar-ui');
+	style('audioplayer', 'bar-ui');
 	style('audioplayer', 'style');
 	script('files', 'jquery.fileupload');
-	script('audioplayer', 'jquery.Jcrop');
-	script('core','tags');
+	script('audioplayer', 'jquery.Jcrop-min');
 	script('audioplayer', 'soundmanager2-nodebug-jsmin'); 
-	script('audioplayer', 'bar-ui');
-	script('audioplayer', 'app');
+	script('audioplayer', 'bar-ui-min');
+	script('audioplayer', 'app-min');
 ?>
 <form style="display:none;" class="float" id="file_upload_form" action="<?php print_unescaped(\OC::$server->getURLGenerator()->linkToRoute('audioplayer.photo.uploadPhoto')); ?>" method="post" enctype="multipart/form-data" target="file_upload_target">
 	<input type="hidden" name="id" value="">
@@ -20,42 +19,45 @@
 </form>
 <iframe style="display:none;" name="file_upload_target" id='file_upload_target' src=""></iframe>
 
-<div id="app-navigation" class="mp3_hide">
+<div id="app-navigation" class="ap_hidden">
 	<div class="innerNav">
-		<h3></h3>
 		<ul id="albenoverview">
 			<li>
 				<span id="alben" style="vertical-align: top; font-size: 15px;">
-				<img class="svg" src="<?php echo \OC::$server->getURLGenerator()->imagePath('audioplayer','albums.svg'); ?>" style="width: 18px; padding-top: 3px;">
 				<?php p($l->t('Albums'));?></span>  
 				<i class="ioc ioc-delete toolTip" title="<?php p($l->t('Reset music library'));?>" id="resetAudios"></i>
 				<i class="ioc ioc-refresh toolTip" title="<?php p($l->t('Scan for new audio files'));?>" id="scanAudios"></i>
 			</li>
 		</ul>
-		<br>&nbsp;<br>
-		<select id="category_selector">
-	  		<option value=""selected><?php p($l->t('Selection'));?></option>
- 	 		<option value="Playlist"><?php p($l->t('Playlists'));?></option>
- 	 		<option value="Artist"><?php p($l->t('Artists'));?></option>
- 	 		<option value="Album"><?php p($l->t('Albums'));?></option>
- 	 		<option value="Title"><?php p($l->t('Titles'));?></option>
- 	 		<option value="Genre"><?php p($l->t('Genres'));?></option>
- 	 		<option value="Year"><?php p($l->t('Years'));?></option>
- 	 		<option value="Folder"><?php p($l->t('Folders'));?></option>
-		</select>
-		<button  class="icon-add mp3_hide" id="addPlaylist"></button>
+		<div id="category_area">
+			<select id="category_selector">
+				<option value=""selected><?php p($l->t('Selection'));?></option>
+				<option value="Playlist"><?php p($l->t('Playlists'));?></option>
+				<option value="Artist"><?php p($l->t('Artists'));?></option>
+				<option value="Album"><?php p($l->t('Albums'));?></option>
+				<option value="Title"><?php p($l->t('Titles'));?></option>
+				<option value="Genre"><?php p($l->t('Genres'));?></option>
+				<option value="Year"><?php p($l->t('Years'));?></option>
+				<option value="Folder"><?php p($l->t('Folders'));?></option>
+			</select>
+			<button  class="icon-add ap_hidden" id="addPlaylist"></button>
+		</div>
 		<ul id="myCategory"></ul>	
 		<!--my playlist clone -->	
 		<li class="app-navigation-entry-edit plclone" id="pl-clone" data-pl="">
-			<input type="text" name="playlist" id="playlist" value=""  />
-				<button class="icon-checkmark"></button>
+			<div id="playlist_controls">	
+				<input type="text" name="playlist" id="playlist" value=""  />
+				<button class="icon-checkmark" style="margin: 0px;"></button>
 				<button class="icon-close"></button>
+			</div>
 		</li>	
 		<!--my playlist clone -->
-		<div class="app-navigation-entry-edit mp3_hide" id="newPlaylist">
-			<input type="text" name="newPlaylistTxt" id="newPlaylistTxt" placeholder="<?php p($l->t('Create new playlist'));?>" /> 
-			<button class="icon-checkmark" id="newPlaylistBtn_ok"></button>
-			<button class="icon-close" id="newPlaylistBtn_cancel"></button>
+		<div class="app-navigation-entry-edit ap_hidden" id="newPlaylist">
+			<div id="newPlaylist_controls">
+				<input type="text" name="newPlaylistTxt" id="newPlaylistTxt" placeholder="<?php p($l->t('Create new playlist'));?>" /> 
+				<button class="icon-checkmark" id="newPlaylistBtn_ok" style="margin: 0px;"></button>
+				<button class="icon-close" id="newPlaylistBtn_cancel"></button>
+			</div>
 		</div>
 	</div>
 </div>	
@@ -159,7 +161,7 @@
 		<span id="individual-playlist-info"></span>
 	  	<span id="individual-playlist-header">
  	 		<span class="header-indi">
- 	 			<span class="header-num">#</span>
+ 	 			<span class="header-num"></span>
   				<span class="header-title"><?php p($l->t('Title'));?></span>
   				<span class="header-artist"><?php p($l->t('Artist'));?></span>
   				<span class="header-album"><?php p($l->t('Album'));?></span>
@@ -173,6 +175,6 @@
 </div>
  
 <div id="dialogSmall" style="width:0;height:0;top:0;left:0;display:none;"></div>
-<div id="edit_photo_dialog" title="Edit photo">
+<div id="edit_photo_dialog" title="<?php p($l->t('Edit picture')); ?>">
 	<div id="edit_photo_dialog_img"></div>
 </div>
