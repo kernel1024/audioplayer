@@ -36,12 +36,8 @@ class PhotoController extends Controller {
 	 * @NoAdminRequired
 	 */
 	
-	public function cropPhoto(){
-		
-		$id = $this -> params('id');	
-		$tmpkey = $this -> params('tmpkey');	
-		
-		$params=array(
+	public function cropPhoto($id, $tmpkey){
+				$params=array(
 		 'tmpkey' => $tmpkey,
 		 'id' => $id,
 		);	
@@ -58,13 +54,10 @@ class PhotoController extends Controller {
 	 * @NoAdminRequired
 	 */
 	 
-	public function clearPhotoCache(){
-		//$id = $this -> params('id');
-		$tmpkey = $this -> params('tmpkey');		
+	public function clearPhotoCache($tmpkey){
 		$data = \OC::$server->getCache()->get($tmpkey);
 		//\OCP\Util::writeLog('pinit','cleared.'.$tmpkey,\OCP\Util::DEBUG);		
 		if($data) {
-			
 			\OC::$server->getCache()->remove($tmpkey);
 		}
 	}
@@ -72,13 +65,11 @@ class PhotoController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
-	public function saveCropPhoto(){
-		$id = $this -> params('id');
-		$tmpkey = $this -> params('tmpkey');			
-		$x = $this -> params('x1', 0);	
-		$y = $this -> params('y1', 0);	
-		$w = $this -> params('w', -1);	
-		$h = $this -> params('h', -1);	
+	public function saveCropPhoto($id,$tmpkey, $x1, $y1, $w, $h){
+		$x = $x1 ?: 0;	
+		$y = $y1 ?: 0;	
+		$w = $w ?: -1;	
+		$h = $h ?: -1;	
 		
 		$image = null;
 		
@@ -121,10 +112,7 @@ class PhotoController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
-	public function getImageFromCloud(){
-		$id = $this -> params('id');	
-		$path = $this -> params('path');	
-		
+	public function getImageFromCloud($id,$path){		
 		$localpath = \OC\Files\Filesystem::getLocalFile($path);
 		$tmpkey = 'audioplayer-photo-' . $id;
 		$size = getimagesize($localpath, $info);
@@ -160,9 +148,7 @@ class PhotoController extends Controller {
 /**
 	 * @NoAdminRequired
 	 */
-	public function uploadPhoto(){
-		//$type = $this->request->getHeader('Content-Type');
-		$id = $this -> params('id');
+	public function uploadPhoto($id){
 		$file = $this->request->getUploadedFile('imagefile');
 		
 		$error = $file['error'];

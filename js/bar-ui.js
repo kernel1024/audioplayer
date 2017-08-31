@@ -579,6 +579,7 @@
        			data.selectedIndex = randIndex[1];
        		}
        		
+			// update Audio Player Status
        		externPlayList(data.selectedIndex);
        
         	return getItem();
@@ -618,11 +619,11 @@
           data.selectedIndex = null;
 
         }
-        //LIBASYS
+        
+		// update Audio Player Status
         externPlayList(data.selectedIndex);
        
         return getItem();
-
       }
 	
       function getPrevious() {
@@ -639,25 +640,26 @@
           }
         }
 
-		 //LIBASYS
-		 externPlayList(data.selectedIndex);
-
+		// update Audio Player Status
+		externPlayList(data.selectedIndex);
 
         return getItem();
-
       }
-      
-	function externPlayList(index){
-		 //LIBASYS
-		$('.albumwrapper.isPlaylist li').removeClass('isActive');
-		$('.albumwrapper.isPlaylist li i.ioc').hide();
-		$('.albumwrapper.isPlaylist li i.fav').show();
-		$('.albumwrapper.isPlaylist li i.ioc').eq(index).removeClass('ioc-volume-off');
-		$('.albumwrapper.isPlaylist li i.ioc').eq(index).addClass('ioc-volume-up');
-		$('.albumwrapper.isPlaylist li i.ioc').eq(index).show();
-		$('.albumwrapper.isPlaylist li i.fav').eq(index).hide();
-		$('.albumwrapper.isPlaylist li').eq(index).addClass('isActive');
 
+	// function for Audio Player 
+	function externPlayList(index){
+		if ($this.PlaylistContainer.data('playlist') === $this.ActivePlaylist.data('playlist')) {
+			$('.albumwrapper.isPlaylist li').removeClass('isActive');
+			$('.albumwrapper.isPlaylist li i.ioc').hide();
+			$('.albumwrapper.isPlaylist li i.fav').show();
+			if (index !== null) {
+				$('.albumwrapper.isPlaylist li i.ioc').eq(index).removeClass('ioc-volume-off');
+				$('.albumwrapper.isPlaylist li i.ioc').eq(index).addClass('ioc-volume-up');
+				$('.albumwrapper.isPlaylist li i.ioc').eq(index).show();
+				$('.albumwrapper.isPlaylist li i.fav').eq(index).hide();
+				$('.albumwrapper.isPlaylist li').eq(index).addClass('isActive');
+			}
+		}
 	}
 	
       function resetLastSelected() {
@@ -910,27 +912,33 @@
         },
 
         onplay: function() {
-          utils.css.swap(dom.o, 'paused', 'playing');
-          $('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).show();
-          $('.albumwrapper.isPlaylist li i.fav').eq(playlistController.data.selectedIndex).hide();
-          $('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).removeClass('ioc-volume-off');
-		  $('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).addClass('ioc-volume-up');
+			utils.css.swap(dom.o, 'paused', 'playing');
+			if ($this.PlaylistContainer.data('playlist') === $this.ActivePlaylist.data('playlist')) {
+				$('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).show();
+				$('.albumwrapper.isPlaylist li i.fav').eq(playlistController.data.selectedIndex).hide();
+				$('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).removeClass('ioc-volume-off');
+				$('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).addClass('ioc-volume-up');
+			}
         },
 
         onpause: function() {
-          utils.css.swap(dom.o, 'playing', 'paused');
-          $('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).show();
-          $('.albumwrapper.isPlaylist li i.fav').eq(playlistController.data.selectedIndex).hide();
-          $('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).addClass('ioc-volume-off');
-		  $('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).removeClass('ioc-volume-up');
+			utils.css.swap(dom.o, 'playing', 'paused');
+			if ($this.PlaylistContainer.data('playlist') === $this.ActivePlaylist.data('playlist')) {
+				$('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).show();
+				$('.albumwrapper.isPlaylist li i.fav').eq(playlistController.data.selectedIndex).hide();
+				$('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).removeClass('ioc-volume-off');
+				$('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).addClass('ioc-volume-up');
+			}
         },
 
         onresume: function() {
-          utils.css.swap(dom.o, 'paused', 'playing');
-           $('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).show();
-          $('.albumwrapper.isPlaylist li i.fav').eq(playlistController.data.selectedIndex).hide();
-          $('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).removeClass('ioc-volume-off');
-		  $('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).addClass('ioc-volume-up');
+			utils.css.swap(dom.o, 'paused', 'playing');
+			if ($this.PlaylistContainer.data('playlist') === $this.ActivePlaylist.data('playlist')) {
+				$('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).show();
+				$('.albumwrapper.isPlaylist li i.fav').eq(playlistController.data.selectedIndex).hide();
+				$('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).removeClass('ioc-volume-off');
+				$('.albumwrapper.isPlaylist li i.ioc').eq(playlistController.data.selectedIndex).addClass('ioc-volume-up');
+			}
         },
 
         whileloading: function() {
@@ -1014,8 +1022,7 @@
           item = playlistController.getNext();
 
           // don't play the same item over and over again, if at end of playlist etc.
-          if (item && playlistController.data.selectedIndex !== lastIndex) {
-
+		if (item && (playlistController.data.selectedIndex !== lastIndex || (playlistController.data.playlist.length === 1 && playlistController.data.loopMode))) {
             playlistController.select(item);
 
             setTitle(item);
@@ -1030,12 +1037,12 @@
               url: playlistController.getURL()
             });
 
-          }/* else {
+          } else {
 
-            // explicitly stop?
-            // this.stop();
+            // explicitly stop 
+            this.stop();
 
-          }*/
+          }
 
         }
 

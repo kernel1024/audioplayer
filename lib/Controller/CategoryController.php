@@ -50,9 +50,7 @@ class CategoryController extends Controller {
 	 * @NoAdminRequired
 	 * 
 	 */
-	public function getCategory(){
-		$category=$this->params('category');
-			
+	public function getCategory($category){
 		$playlists= $this->getCategoryforUser($category);
 	
 		if(is_array($playlists)){
@@ -62,8 +60,7 @@ class CategoryController extends Controller {
 			];
 		}else{
 			$result=[
-				'status' => 'success',
-				'data' => 'nodata'
+				'status' => 'nodata'
 			];
 		}
 		$response = new JSONResponse();
@@ -126,7 +123,7 @@ class CategoryController extends Controller {
 			 			";
 		}	
 		
-		if ($SQL) {	
+		if (isset($SQL)) {	
 			$stmt = $this->db->prepare($SQL);
 			$stmt->execute(array($this->userId));
 			$results = $stmt->fetchAll();
@@ -203,28 +200,49 @@ class CategoryController extends Controller {
 		}
 		return $count;
 	}
+
+	private function getAlbumCountForCategory($category,$categoryId){
+
+		if($category === 'Artist') {
+			$SQL="SELECT  COUNT(DISTINCT `AT`.`album_id`) AS `count`
+					FROM `*PREFIX*audioplayer_tracks` `AT`
+					LEFT JOIN `*PREFIX*audioplayer_artists` `AA` ON `AT`.`artist_id` = `AA`.`id`
+			 		WHERE  `AT`.`artist_id` = ? 
+			 		AND `AT`.`user_id` = ?
+			 		";
+		} 
+
+		$stmt = $this->db->prepare($SQL);
+		$stmt->execute(array($categoryId, $this->userId));
+		$results = $stmt->fetchAll();
+		foreach($results as $row) {
+			$count = $row['count'];
+		}
+		return $count;
+	}
+
 	
 	/**
 	 * @NoAdminRequired
 	 * 
 	 */
-	public function getCategoryItems(){
-		$category=$this->params('category');
-		$categoryId=$this->params('id');
+	public function getCategoryItems($category, $categoryId){
+		$albums = 0;
 			
 		$itmes = $this->getItemsforCatagory($category,$categoryId);
 		$headers = $this->getHeadersforCatagory($category);
+		if ($category === 'Artist') $albums = $this->getAlbumCountForCategory($category,$categoryId);
 	
 		if(is_array($itmes)){
 			$result=[
 				'status' => 'success',
 				'data' => $itmes,
-				'header' => $headers,				
+				'header' => $headers,
+				'albums' => $albums,			
 			];
 		}else{
 			$result=[
-				'status' => 'success',
-				'data' => 'nodata'
+				'status' => 'nodata',
 			];
 		}
 		$response = new JSONResponse();
@@ -235,15 +253,16 @@ class CategoryController extends Controller {
 	
 	private function getItemsforCatagory($category,$categoryId){
 
+		$favorite = false;
 		$aTracks=array();		
-		$SQL_select = "SELECT  `AT`.`id` , `AT`.`title`  AS `cl1`,`AT`.`length` AS `len`,`AA`.`name` AS `cl2`, `AB`.`name` AS `cl3`, `AT`.`file_id` AS `fid`, `AT`.`mimetype` AS `mim`, `AB`.`id` AS `cid`, `AB`.`cover`, LOWER(`AB`.`name`) AS `lower`";
+		$SQL_select = "SELECT  `AT`.`id`, `AT`.`title`  AS `cl1`, `AA`.`name` AS `cl2`, `AB`.`name` AS `cl3`, `AT`.`length` AS `len`, `AT`.`file_id` AS `fid`, `AT`.`mimetype` AS `mim`, `AB`.`id` AS `cid`, `AB`.`cover`, LOWER(`AB`.`name`) AS `lower`";
 		$SQL_from 	= " FROM `*PREFIX*audioplayer_tracks` `AT`
 					LEFT JOIN `*PREFIX*audioplayer_artists` `AA` ON `AT`.`artist_id` = `AA`.`id`
 					LEFT JOIN `*PREFIX*audioplayer_albums` `AB` ON `AT`.`album_id` = `AB`.`id`";
 		$SQL_order	= " ORDER BY LOWER(`AB`.`name`) ASC, `AT`.`disc` ASC, `AT`.`number` ASC";
 
 		if($category === 'Artist') {
-			$SQL_select = "SELECT  `AT`.`id` , `AT`.`title`  AS `cl1`,`AB`.`name` AS `cl2`,`AT`.`length` AS `len`,`AT`.`year` AS `cl3`, `AT`.`file_id` AS `fid`, `AT`.`mimetype` AS `mim`, `AB`.`id` AS `cid`, `AB`.`cover`, LOWER(`AB`.`name`) AS `lower`";
+			$SQL_select = "SELECT  `AT`.`id`, `AT`.`title`  AS `cl1`, `AB`.`name` AS `cl2`, `AT`.`year` AS `cl3`, `AT`.`length` AS `len`, `AT`.`file_id` AS `fid`, `AT`.`mimetype` AS `mim`, `AB`.`id` AS `cid`, `AB`.`cover`, LOWER(`AB`.`name`) AS `lower`";
 			$SQL = $SQL_select . $SQL_from .
 				"WHERE  `AT`.`artist_id` = ? AND `AT`.`user_id` = ?" .
 			 	$SQL_order;
@@ -261,27 +280,32 @@ class CategoryController extends Controller {
 			 	$SQL_order;
 		} elseif ($category === 'Playlist') {
 			if ($categoryId === "X1") { // Favorites
-				$SQL = "SELECT  `AT`.`id` , `AT`.`title`  AS `cl1`,`AT`.`length` AS `len`,`AA`.`name` AS `cl2`, `AB`.`name` AS `cl3`, `AT`.`file_id` AS `fid`, `AT`.`mimetype` AS `mim`, `AB`.`id` AS `cid`, `AB`.`cover`, LOWER(`AT`.`title`) AS `lower`" . 
+				$SQL = "SELECT  `AT`.`id` , `AT`.`title`  AS `cl1`,`AA`.`name` AS `cl2`, `AB`.`name` AS `cl3`,`AT`.`length` AS `len`, `AT`.`file_id` AS `fid`, `AT`.`mimetype` AS `mim`, `AB`.`id` AS `cid`, `AB`.`cover`, LOWER(`AT`.`title`) AS `lower`" . 
 					$SQL_from .
 					"WHERE `AT`.`id` <> ? AND `AT`.`user_id` = ?" .
 			 		" ORDER BY LOWER(`AT`.`title`) ASC";
+			 		$categoryId = 0; //overwrite to integer for PostgreSQL
+			 		$favorite = true;
 			} elseif ($categoryId === "X2") { // Recently Added
 				$SQL = 	$SQL_select . $SQL_from .
 			 		"WHERE `AT`.`id` <> ? AND `AT`.`user_id` = ? 
 			 		ORDER BY `AT`.`file_id` DESC
-			 		Limit 25";
+			 		Limit 100";
+			 		$categoryId = 0;
 			} elseif ($categoryId === "X3") { // Recently Played
 				$SQL = 	$SQL_select . $SQL_from .
 			 		"LEFT JOIN `*PREFIX*audioplayer_statistics` `AS` ON `AT`.`id` = `AS`.`track_id`
 			 		WHERE `AS`.`id` <> ? AND `AT`.`user_id` = ? 
 			 		ORDER BY `AS`.`playtime` DESC
-			 		Limit 25";
+			 		Limit 50";
+			 		$categoryId = 0;
 			} elseif ($categoryId === "X4") { // Most Played
 				$SQL = 	$SQL_select . $SQL_from .
 			 		"LEFT JOIN `*PREFIX*audioplayer_statistics` `AS` ON `AT`.`id` = `AS`.`track_id`
 			 		WHERE `AS`.`id` <> ? AND `AT`.`user_id` = ? 
 			 		ORDER BY `AS`.`playcount` DESC
 			 		Limit 25";
+			 		$categoryId = 0;
 			} else {
 				$SQL = $SQL_select ." , `AP`.`sortorder`" .
 					"FROM `*PREFIX*audioplayer_playlist_tracks` `AP` 
@@ -297,7 +321,7 @@ class CategoryController extends Controller {
 				"WHERE `AT`.`folder_id` = ? AND `AT`.`user_id` = ?" .
 			 	$SQL_order;
 		} elseif ($category === 'Album') {
-			$SQL_select = "SELECT  `AT`.`id` , `AT`.`title`  AS `cl1`,`AT`.`number`  AS `num`,`AT`.`length` AS `len`,`AA`.`name` AS `cl2`, `AT`.`disc` AS `dsc`, `AT`.`file_id` AS `fid`, `AT`.`mimetype` AS `mim`, `AB`.`id` AS `cid`, `AB`.`cover`, LOWER(`AT`.`title`) AS `lower`";
+			$SQL_select = "SELECT  `AT`.`id`, `AT`.`title` AS `cl1`, `AA`.`name` AS `cl2`, `AT`.`length` AS `len`, `AT`.`disc` AS `dsc`, `AT`.`file_id` AS `fid`, `AT`.`mimetype` AS `mim`, `AB`.`id` AS `cid`, `AB`.`cover`, LOWER(`AT`.`title`) AS `lower`,`AT`.`number`  AS `num`";
 			$SQL = 	$SQL_select . $SQL_from .
  				"WHERE `AB`.`id` = ? AND `AB`.`user_id` = ?" .
 			 	" ORDER BY `AT`.`disc` ASC, `AT`.`number` ASC";
@@ -321,7 +345,10 @@ class CategoryController extends Controller {
 				if ($row['cover'] === null) {
 					$row['cid'] = '';
 				} 
- 				array_splice($row, 9, 2);
+				if ($category === 'Album') {
+					$row['cl3'] = $row['dsc'].'-'.$row['num'];
+				} 
+ 				array_splice($row, 8, 3);
 				$path = rtrim($path,"/");
 				$row['lin'] = rawurlencode($path);
 				if (in_array($row['fid'], $favorites)) {
@@ -329,17 +356,13 @@ class CategoryController extends Controller {
 				} else {
 					$row['fav'] = "f";
 				}
-				
-				if ($category === 'Album') {
-					$row['cl3'] = $row['dsc'].'-'.$row['num'];
-				} 
-				
-				if ($categoryId === "X1" AND !in_array($row['fid'], $favorites)) {
+								
+				if ($favorite AND !in_array($row['fid'], $favorites)) {
 				} else {
 					$aTracks[]=$row;
 				}
 			} else {
-				$this->deleteFromDB($row['id'],$row['cid']);
+				$this->deleteFromDB($row['fid']);
 			}	
 		}
 		
@@ -363,25 +386,51 @@ class CategoryController extends Controller {
 
 	}
 
-	private function deleteFromDB($Id,$iAlbumId){		
-		$stmtCountAlbum = $this->db->prepare( 'SELECT COUNT(`album_id`) AS `ALBUMCOUNT`  FROM `*PREFIX*audioplayer_tracks` WHERE `album_id` = ? ' );
-		$stmtCountAlbum->execute(array($iAlbumId));
-		$rowAlbum = $stmtCountAlbum->fetch();
-		if((int)$rowAlbum['ALBUMCOUNT'] === 1){
+	/**
+	* @NoAdminRequired
+	* 
+	*/
+	public function deleteFromDB($file_id){		
+		\OCP\Util::writeLog('audioplayer','deleteFromDB: '.$file_id,\OCP\Util::DEBUG);
+
+		$stmt = $this->db->prepare( 'SELECT `album_id`, `id` FROM `*PREFIX*audioplayer_tracks` WHERE `file_id` = ?  AND `user_id` = ?' );
+		$stmt->execute(array($file_id, $this->userId));
+		$row = $stmt->fetch();
+		$AlbumId = $row['album_id'];
+		$TrackId = $row['id'];
+
+		$stmt = $this->db->prepare( 'SELECT COUNT(`album_id`) AS `ALBUMCOUNT`  FROM `*PREFIX*audioplayer_tracks` WHERE `album_id` = ? ' );
+		$stmt->execute(array($AlbumId));
+		$row = $stmt->fetch();
+		if((int)$row['ALBUMCOUNT'] === 1){
 			$stmt = $this->db->prepare( 'DELETE FROM `*PREFIX*audioplayer_albums` WHERE `id` = ? AND `user_id` = ?' );
-			$stmt->execute(array($iAlbumId, $this->userId));
+			$stmt->execute(array($AlbumId, $this->userId));
 		}
 		
-		$stmt = $this->db->prepare( 'DELETE FROM `*PREFIX*audioplayer_tracks` WHERE `user_id` = ? AND `id` = ?' );
-		$stmt->execute(array($this->userId, $Id));		
-	}
+		$stmt = $this->db->prepare( 'DELETE FROM `*PREFIX*audioplayer_tracks` WHERE  `file_id` = ? AND `user_id` = ?' );
+		$stmt->execute(array($file_id, $this->userId));		
+
+		$stmt = $this->db->prepare( 'SELECT `playlist_id` FROM `*PREFIX*audioplayer_playlist_tracks` WHERE `track_id` = ?' );
+		$stmt->execute(array($TrackId));
+		$row = $stmt->fetch();
+		$PlaylistId = $row['playlist_id'];
+
+		$stmt = $this->db->prepare( 'SELECT COUNT(`playlist_id`) AS `PLAYLISTCOUNT` FROM `*PREFIX*audioplayer_playlist_tracks` WHERE `playlist_id` = ? ' );
+		$stmt->execute(array($PlaylistId));
+		$row = $stmt->fetch();
+		if((int)$row['PLAYLISTCOUNT'] === 1){
+			$stmt = $this->db->prepare( 'DELETE FROM `*PREFIX*audioplayer_playlists` WHERE `id` = ? AND `user_id` = ?' );
+			$stmt->execute(array($PlaylistId, $this->userId));
+		}
+
+		$stmt = $this->db->prepare( 'DELETE FROM `*PREFIX*audioplayer_playlist_tracks` WHERE  `track_id` = ?' );
+		$stmt->execute(array($TrackId));		
+}
 
 	/**
 	 * @NoAdminRequired
 	 */
-	public function setFavorite() {
-		$fileId = $this->params('fileId');
-		$isFavorite = $this->params('isFavorite');
+	public function setFavorite($fileId, $isFavorite) {
 		$this->tagger = $this->tagManager->load('files');
 		
 		if ($isFavorite === "true") {
@@ -394,8 +443,7 @@ class CategoryController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 */
-	public function setStatistics() {
-		$track_id = $this->params('track_id');
+	public function setStatistics($track_id) {
 		$date = new \DateTime();
 		$playtime = $date->getTimestamp();
 		

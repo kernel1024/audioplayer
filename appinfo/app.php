@@ -12,7 +12,7 @@
  * @copyright 2015 Sebastian Doell
  */
  
- namespace OCA\audioplayer\AppInfo;
+namespace OCA\audioplayer\AppInfo;
  
 $request = \OC::$server->getRequest();
 	
@@ -30,6 +30,9 @@ $request = \OC::$server->getRequest();
 	}
 
 $app = new Application();
+$app->registerFileHooks();
+$app->registerUserHooks();
+
 $c = $app->getContainer();
 // add an navigation entry
 
@@ -47,5 +50,3 @@ $c->getServer()->getNavigationManager()->add($navigationEntry);
 $c->getServer()->getSearch()->registerProvider('OCA\audioplayer\Search\Provider', array('app'=>'audioplayer','apps' => array('files')));	
 
 \OCP\App::registerPersonal($c->query('AppName'), 'lib/Settings/User');
-
-\OCP\Util::connectHook('OC_User', 'post_deleteUser', 'OCA\audioplayer\Hooks\UserHooks', 'deleteUser'); //DELETE

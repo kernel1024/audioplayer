@@ -67,10 +67,9 @@ class ScannerController extends Controller {
 	 * @NoAdminRequired
 	 * 
 	 */
-	public function editAudioFile() {
-		$songFileId=(int)$this->params('songFileId');
+	public function editAudioFile($songFileId) {
 		$resultData=[];
-		#	\OCP\Util::writeLog('audioplayer','songFileId: '.$songFileId,\OCP\Util::DEBUG);
+			\OCP\Util::writeLog('audioplayer','songFileId: '.$songFileId,\OCP\Util::DEBUG);
 		
 		if(!class_exists('getid3_exception')) {
 			require_once __DIR__ . '/../../3rdparty/getid3/getid3.php';
@@ -218,27 +217,21 @@ class ScannerController extends Controller {
 	 * @NoAdminRequired
 	 * 
 	 */
-	public function saveAudioFileData() {
-		
-		$songFileId=$this->params('songFileId');
-		$pTrackId = $this->params('trackId');
-		
-		$pYear=$this->params('year');
-		$pTitle=$this->params('title');
-		$pArtist=$this->params('artist');
-		$pExistArtist = $this->params('existartist');
-		
-		$pAlbum=$this->params('album');
-		$pExistAlbum=$this->params('existalbum');
-		$pTrack=$this->params('track');
-		$pTrackTotal=$this->params('tracktotal');
-		$pGenre = $this->params('genre');
-		$pExistGenre = $this->params('existgenre');
-		
-		$addCoverToAlbum = $this->params('addcover');
-		
-		$pImgSrc=$this->params('imgsrc');
-		$pImgMime=$this->params('imgmime');
+	public function saveAudioFileData($songFileId, $trackId, $year, $title, $artist, $existartist, $album, $existalbum, $track, $tracktotal, $genre, $existgenre, $addcover, $imgsrc, $imgmime) {
+		$pTrackId = $trackId;		
+		$pYear=$year;
+		$pTitle=$title;
+		$pArtist=$artist;
+		$pExistArtist = $existartist;
+		$pAlbum=$album;
+		$pExistAlbum=$existalbum;
+		$pTrack=$track;
+		$pTrackTotal=$tracktotal;
+		$pGenre = $genre;
+		$pExistGenre = $existgenre;
+		$addCoverToAlbum = $addcover;
+		$pImgSrc=$imgsrc;
+		$pImgMime=$imgmime;
 		$trackNumber = '';
 		if (!empty($pTrack)) {
 			$trackNumber = $pTrack.(!empty($pTrackTotal) ? '/'.$pTrackTotal : '');
@@ -443,10 +436,9 @@ class ScannerController extends Controller {
 	 * @NoAdminRequired
 	 * 
 	 */
-	public function scanForAudios($userId = null, $output = null, $debug = null) {
+	public function scanForAudios($userId = null, $output = null, $debug = null, $progresskey, $scanstop) {
 
-		$pProgresskey 			= $this -> params('progresskey');
-		$scanstop 				= $this -> params('scanstop');
+		$pProgresskey 			= $progresskey;
 		$this->occ_job 			= false;
 		
 		if (isset($scanstop))	{
@@ -798,7 +790,7 @@ class ScannerController extends Controller {
 			
 		$SQL='SELECT id FROM *PREFIX*audioplayer_tracks WHERE `user_id`= ? AND `title`= ? AND `number`= ? 
 				AND `artist_id`= ? AND `album_id`= ? AND `length`= ? AND `bitrate`= ? 
-				AND `mimetype`= ? AND `genre_id`= ? AND `year`= ? AND `folder_id`= ?
+				AND `mimetype`= ? AND `genre_id`= ? AND `year`= ?
 				AND `disc`= ? AND `composer`= ? AND `subtitle`= ?';
 		$stmt = $this->db->prepare($SQL);
 		$stmt->execute(array($this->userId, 
@@ -811,7 +803,6 @@ class ScannerController extends Controller {
 				     $aTrack['mimetype'],
 				     $aTrack['genre'],
 				     $aTrack['year'],
-				     $aTrack['folder_id'],
 				     $aTrack['disc'],
 				     $aTrack['composer'],
 				     $aTrack['subtitle'],
@@ -858,8 +849,8 @@ class ScannerController extends Controller {
 	 * @NoAdminRequired
 	 * 
 	 */
-	public function getProgress() {
-		$pProgresskey = $this -> params('progresskey');
+	public function getProgress($progresskey) {
+		$pProgresskey = $progresskey;
 		\OC::$server->getSession()->close();
 					
 		$aCurrent = \OC::$server->getCache()->get($pProgresskey);
@@ -1013,7 +1004,7 @@ class ScannerController extends Controller {
 
 		$image = new \OCP\Image();
  		if($image->loadFromdata($data)) {
-			if(($image->width() <= 250 && $image->height() <= 250) || $image->resize(250)) {
+			if(($image->width() <= 250 && $image->height() <= 250) || $image->centerCrop(250)) {
 				$imgString=$image->__toString();
 				$this->writeCoverToAlbum($iAlbumId,$imgString,'');
 			}
@@ -1030,7 +1021,7 @@ class ScannerController extends Controller {
 	 * @return string
 	 */
 	private function truncate($string, $length, $dots = "...") {
-    	return (strlen($string) > $length) ? substr($string, 0, $length - strlen($dots)) . $dots : $string;
+    	return (strlen($string) > $length) ? mb_strcut($string, 0, $length - strlen($dots)) . $dots : $string;
 	}
 
 	/**

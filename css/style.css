@@ -337,7 +337,7 @@ i#scanAudiosFirst{
 	display:block;
 }
 
-#audios-audioscontainer{
+#albums-container{
 margin:0;
 width:100%;
 position:relative;
@@ -352,10 +352,11 @@ height:auto;
 .fileActionsMenu{
 	margin-top: 30px;
 	margin-right: 5px;
-	padding-bottom: 15px
+	padding-bottom: 15px;
+	top: unset;
 }
 
-#individual-playlist-container{
+#playlist-container{
 	margin:0;
 	width:98%;
 	position:relative;
@@ -1062,8 +1063,6 @@ li.dropHover{
 		position:fixed;
 		background-color:#fff;
 		opacity:1;
-		height:40px;
-		width:45px;
 	}
 	#app-navigation-toggle_alternative{
 		display: none;
@@ -1167,7 +1166,7 @@ li.dropHover{
 	.play-pause{
 		background-size:50%;
 	}
-	#audios-audioscontainer{
+	#albums-container{
 		padding:0;
 		
 	}
