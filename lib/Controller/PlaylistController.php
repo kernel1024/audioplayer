@@ -15,6 +15,7 @@ namespace OCA\audioplayer\Controller;
 
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\IL10N;
 use OCP\IDbConnection;
@@ -63,8 +64,6 @@ class PlaylistController extends Controller {
 			 $response = new JSONResponse();
 			 $response -> setData($result);
 			 return $response;
-		 } else {
-		     return null;
 		 }
 	}
 	
@@ -141,8 +140,10 @@ class PlaylistController extends Controller {
 	 * @NoAdminRequired
 	 * 
 	 */
-	public function sortPlaylist($playlistid, $songids){
-		$iTrackIds = explode(';', $songids);
+	public function sortPlaylist($playlistid, $songid){
+		$iPlaylistId = $playlistid;
+		$iTrackIds = explode(';', $songid);
+			
 		$counter = 1;	
 		foreach($iTrackIds as $trackId){
 			$stmt = $this->db->prepare( 'UPDATE `*PREFIX*audioplayer_playlist_tracks` SET `sortorder` = ? WHERE `playlist_id` = ? AND `track_id` = ?' );
@@ -152,7 +153,8 @@ class PlaylistController extends Controller {
 		$result=[
 		'status' => 'success',
 		'msg' =>(string) $this->l10n->t('Sorting Playlist success! Playlist reloaded!')
-	  	];
+	  ];
+	  
 	 $response = new JSONResponse();
 	 $response -> setData($result);
 	 return $response;

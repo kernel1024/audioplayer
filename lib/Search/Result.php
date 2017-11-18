@@ -33,6 +33,7 @@ class Result extends \OCP\Search\Result {
 			$this->id = $data['id'];
 			$this->name = $data['description'];
 			$this->link = $data['link'];
+			$this->icon = $data['icon'];
 		}
 	}
 }
