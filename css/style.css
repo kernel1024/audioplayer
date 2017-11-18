@@ -18,6 +18,17 @@
 #searchresults {
 	margin-top: 0px !important;
 }
+
+#audio-settings li > a {
+	line-height: 30px;
+	min-height: 30px;
+}
+#audio-settings li.audio-settings-item {
+	padding-left: 14px;
+	padding-top: 10px;
+	opacity: .57;
+}
+
 #loading {
 	position:absolute; z-index:1000;margin-top:15%;left:0; display: none; width:100%;
 	text-align:center;
@@ -115,18 +126,9 @@ i#scanAudiosFirst{
 .innerNav h3{
 	color:#999;
 }
-
-#myCategory li{
-	cursor: pointer;
-	/*font-size:14px;*/
-	line-height:25px;
-	display:block;
-	float: left;
-	padding: 0px 6px 0px 12px;
-}
-
-#myCategory .ui-droppable {
-	padding: 0px 6px 0px 12px;
+#albenoverview{
+	height: 60px !important;
+	min-height: 60px;
 }
 
 #albenoverview li {
@@ -138,6 +140,7 @@ i#scanAudiosFirst{
     background-repeat: no-repeat;
 	background-image: url('../img/albums.svg');
 	margin: 6px 0px;
+	opacity: 0.57;
 }
 #albenoverview li span{
 	cursor: pointer;
@@ -156,6 +159,7 @@ i#scanAudiosFirst{
 #category_area {
 	display: flex;
 	margin: 0px 6px 6px 6px;
+	min-height: 40px;
 }
 #category_selector {
 	width: 100%;
@@ -201,26 +205,43 @@ i#scanAudiosFirst{
 
 #app-navigation #newPlaylist_controls {
 	display: flex;
-	margin: 0px 6px;
+	margin: 0 6px;
 }
 #app-navigation  input#newPlaylistTxt[type="text"],
 #app-navigation .app-navigation-entry-edit input[type="text"] {
-	padding: 0px 5px;
+	padding: 0 5px;
 	width: 100%;
 	height: 30px;
-	margin: 0px;
+	margin: 0;
 }
 #app-navigation .app-navigation-entry-edit button,
 #app-navigation .app-navigation-entry-edit input[type="submit"] {
 	width: 36px;
 	height: 32px;
-	margin: 0px 0px 0px 4px;
+	margin: 0 0 0 4px;
 }
 #app-navigation button#addPlaylist{
 	width: 36px;
 	height: 32px;
-	margin: 0px 0px 0px 4px;
+	margin: 0 0 0 4px;
 }
+
+#myCategory {
+	height: initial !important;
+}
+
+#myCategory li{
+	line-height:28px;
+	display:block;
+	float: left;
+	padding: 0 6px 0 12px;
+	opacity: 0.57;
+}
+
+#myCategory .ui-droppable {
+	padding: 0 6px 0 12px;
+}
+
 
 #myCategory li span.info-cover,
 #alben span.info-cover
@@ -244,7 +265,6 @@ i#scanAudiosFirst{
 	text-overflow: ellipsis;
 	overflow:hidden;
 	cursor:pointer;
-	min-height: 25px;
 }
 #myCategory li span.pl-name-play{
 	float:left;
@@ -255,25 +275,9 @@ i#scanAudiosFirst{
 	overflow:hidden;
 	cursor:pointer;
 }
+#albenoverview li:hover,
 #myCategory li:hover{
-	background-color:#e7e7e7;
-	font-weight:bold;
-}
-
-#myCategory li a.icon-rename{
-	float:left;
-	position:relative;
-	width:24px;
-	min-height:25px;
-	height:25px;
-	padding:0px;
-	line-height:30px;
-	opacity:0;
-}
-
-#myCategory li:hover a.icon-rename{
-	opacity:1;
-	background-color:transparent;
+	opacity: 1;
 }
 
 #myCategory li span.counter{
@@ -285,68 +289,72 @@ i#scanAudiosFirst{
 }
 
 .ui-state-highlight {
-  	 height: 1.5em;
-  	  line-height: 1.2em; 
+	height: 1.5em;
+	line-height: 1.2em;
   	background:#FFFABC;
   	}
+
+#myCategory li i.icon-rename{
+	display:none;
+	float:left;
+	position:relative;
+	width:24px;
+	min-height:25px;
+	height:25px;
+	padding:0;
+	line-height:30px;
+	opacity: 0.3;
+	right: -5px;
+}
+
+#myCategory li.active i.icon-rename:hover{
+	opacity:1;
+	background-color:transparent;
+}
+
 #myCategory li i.ioc-sort{
+	display:none;
 	float:right;
 	position:absolute;
 	right:54px;
 	font-size:18px;
-	color:#ccc;
+	color:#cccccc;
 }
-#myCategory li i.ioc-sort:hover,
-#myCategory li i.ioc-sort.sortActive{
-	color:#008000;
-}
-#myCategory li i.ioc-sort.sortActive{
-	
+#myCategory li.active i.ioc-sort,
+#myCategory li.active i.ioc-delete,
+#myCategory li.active i.icon-rename
+{
 	display:block;
 }
+
+#myCategory li.active i.ioc-sort:hover,
+#myCategory li.active i.ioc-sort.sortActive{
+	color:#008000;
+}
+
 #myCategory li i.ioc-delete{
+	display:none;
 	float:right;
 	position:absolute;
 	right:38px;
 	font-size:14px;
-	color:#ccc;
+	color:#cccccc;
 }
 
-#myCategory li i.ioc-delete:hover
+#myCategory li.active i.ioc-delete:hover
 {
 	color:#A9302A;
 }
 
-#alben:hover, 
-#alben.bAktiv,
-#myCategory li.activeIndiPlaylist 
-{
-	font-weight:bold;	
-}
-#myCategory li i.ioc-sort{
-	display:none;
-}
-
-#myCategory li i.ioc-delete{
-	display:none;
-}
-#myCategory li:hover i.ioc-delete{
-	display:block;
-}
-#myCategory li.activeIndiPlaylist:hover i.ioc-sort{
-	display:block;
-}
-
 #albums-container{
-margin:0;
-width:100%;
-position:relative;
-padding:0;
-top:70px;
-float:left;
-display:block;
-height:auto;
-
+	margin:0;
+	width:100%;
+	position:relative;
+	padding:0;
+	top:70px;
+	float:left;
+	display:block;
+	height:auto;
 }
 
 .fileActionsMenu{
