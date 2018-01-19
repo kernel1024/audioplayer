@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to the Audio Player project will be documented in this file.
 
+## 2.2.3 - 2018-01-16
+### Changed
+- adjust PLS playlist parser [#265](https://github.com/rello/audioplayer/issues/265)
+
+### Deprecated
+- `OCP\PERMISSION_UPDATE` replaced by `OCP\Constants::PERMISSION_UPDATE` [#266](https://github.com/rello/audioplayer/issues/266)
+
+### Fixed
+- Audio Player CSS is breaking Overflow Menu in Files app [#264](https://github.com/rello/audioplayer/issues/264)
+
 ## 2.2.2 - 2017-12-26
 ### Added
 - `Folder.jpg` as cover art filename [#256](https://github.com/rello/audioplayer/issues/256)
